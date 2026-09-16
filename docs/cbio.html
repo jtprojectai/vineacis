@@ -269,6 +269,21 @@ body{background:var(--bg); min-height:100dvh;}
 html{ background:var(--bg); }
 body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 
+/* ===== 雙 Tab 結構 (2026-09-16) ===== */
+.tabs{display:flex; gap:8px; margin:0 0 14px; border-bottom:1px solid var(--line);}
+.tab-btn{appearance:none; background:none; border:0; border-bottom:2px solid transparent;
+  padding:10px 14px; font-family:var(--font-sans); font-size:15px; font-weight:600;
+  color:var(--text-dim); cursor:pointer;}
+.tab-btn .tab-count{font-family:var(--font-mono); font-size:12px; color:var(--text-dimmer); margin-left:6px;}
+.tab-btn.is-active{color:var(--accent-text); border-bottom-color:var(--accent);}
+.tab-btn.is-active .tab-count{color:var(--accent-text);}
+/* .layout 與既有 .grid 使用同一組網格規則 */
+.layout{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:22px; align-items:start;}
+@media (max-width:900px){ .layout{grid-template-columns:1fr !important;} }
+.layout > main{min-width:0;}
+/* 關鍵：.layout 是 display:grid，會蓋掉 hidden 的預設行為，這行必須有 */
+.tab-panel[hidden]{display:none;}
+
 /* ===== GitHub Pages 獨立網頁版專用（非 iframe，safe-area 在這裡是真的有效） ===== */
 @media (max-width:640px){
   .wrap{
@@ -322,12 +337,14 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
     <span class="marquee-item"><b>DOW</b> 52,093.11 <span class="down">▼328.09（-0.63%）</span></span>
     <span class="marquee-item">美 10 年期殖利率盤中 <b>5.04%</b>・2007 年 7 月以來首度站上 5%</span>
     <span class="marquee-item">FOMC 台北時間 9/17 02:00 決議・升息一碼定價 <b>86-92%</b>・目標 3.75%-4.00%</span>
+    <span class="marquee-item">BOE 9/17 決議・BOJ 9/18 決議升息定價 <b>97%</b>・三大央行 72 小時內接連表態</span>
     <span class="marquee-item">8 月 CPI 年增 <b>3.4%</b>・核心 2.4% 為 2021 年 3 月以來最低・汽油月增 3.9%</span>
     <span class="marquee-item">Brent 約 <b>107 美元</b>・沙烏地東西管線 9/11 關閉・荷姆茲流量降至約 200 萬桶/日</span>
     <span class="marquee-item">費半（9/14）<span class="down">▼5.9%</span>・輝達 <span class="down">▼3.36%</span>・博通 <span class="down">▼4.77%</span>（Amodei 減速論）</span>
     <span class="marquee-item">ECB 存款利率 <b>2.50%</b> 今日生效・三個月內第二次升息</span>
     <span class="marquee-item">甲骨文 FY27Q1 RPO <b>6,640 億美元</b>・OCI 營收 <span class="up">▲121%</span></span>
     <span class="marquee-item">台積電 8 月營收 <b>5,148.1 億台幣</b> <span class="up">▲53.3% YoY</span> 創單月新高</span>
+    <span class="marquee-item">銅 <b>6.39 美元/磅</b>・鋁 <b>3,348 美元/噸</b> 為 8 月以來最高</span>
     <span class="marquee-item">現貨黃金約 <b>4,300 美元</b> 五週低・比特幣約 <b>77,000</b> 窄幅整理</span>
     <span class="marquee-item">台股（9/15）收 <b>45,511.49</b> <span class="down">▼351.03（-0.77%）</span>・外資連四賣</span>
   </div>
@@ -335,17 +352,22 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 
 <div class="wrap">
   <div class="databasis">
-    <b>資料基準：</b>本頁美股、美債、歐股數據以最近一個完整交易日 <b>2026.09.15（二）收盤</b> 為準；油價、黃金、比特幣為 09.15 盤中報價（已標示）；
+    <b>資料基準：</b>本頁美股、美債、歐股數據以最近一個完整交易日 <b>2026.09.15（二）收盤</b> 為準；油價、黃金、比特幣、金屬為 09.15 盤中或收盤報價（已標示）；
     台股採 09.15 收盤，09.16 盤中數據不納入。FOMC 決議於台北時間 09.17 02:00 公布，本頁所有升息機率皆為決議前的市場定價，非正式結果。
   </div>
-  <div class="grid">
-    <!-- MAIN COLUMN -->
-    <div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="panel-news" id="tab-news">時事 <span class="tab-count">15</span></button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-tech" id="tab-tech">科技 <span class="tab-count">15</span></button>
+  </div>
+
+<div class="layout tab-panel" id="panel-news" role="tabpanel" aria-labelledby="tab-news">
+  <main>
       <div class="section-heading">
         <h2>Top Signals</h2>
-        <span class="section-sub">15 SIGNALS</span>
+        <span class="section-sub">15</span>
       </div>
-<div class="signals" id="signals-root">
+      <div class="signals" id="signals-sig">
 <article class="card crit">
   <div class="card-top">
     <span class="sig-id mono">SIG-01</span>
@@ -401,39 +423,22 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
   <div class="card-top">
     <span class="sig-id mono">SIG-04</span>
     <span class="badge crit">CRITICAL</span>
-    <span class="card-time mono">2026.09.12-15</span>
+    <span class="card-time mono">2026.09.17-18 決議</span>
   </div>
-  <h3 class="headline">Amodei 週末發表〈We Must Pace the Frontier〉呼籲全球放慢前沿 AI 開發，Altman、Hassabis、Musk 連署；費半週一重挫 5.9%、輝達跌 3.36%</h3>
+  <h3 class="headline">日本銀行 9/17-18 會議：OIS 定價約 97% 升息一碼至 1.25%，將創 1995 年以來新高；本輪首度與 Fed 同週決議</h3>
   <div class="field">
     <div class="field-label">Why It Matters</div>
-    <p>Anthropic 執行長 Dario Amodei 於 9 月 12 日（六）發表〈We Must Pace the Frontier〉，主張全球協調放慢前沿模型開發，以降低「失去對 AI 系統控制」及「被用於網路攻擊與生物恐怖主義」的風險，並強調遞迴式自我改進（AI 設計或訓練自己的後繼者）「必須極為謹慎地進行，甚至不該進行」。OpenAI 執行長 Sam Altman 當日在 X 表示同意「pace the frontier」，Google DeepMind 的 Demis Hassabis 稱「方向正確」，Elon Musk 亦表態支持。Amodei 自己承認中國是「最棘手的兩難」——若美方自我約束而中國不跟進，可能導致對方取得地緣主導權；中國官媒環球時報則批評此議為「散播恐懼」。市場的反應直接而劇烈：9 月 14 日（一）費城半導體指數重挫 5.9%，輝達跌 3.36%（市值蒸發約 1,766 億美元）、博通跌 4.77%、AMD 跌 4.4%，那斯達克綜合跌 1.09%、標普跌 0.78%。美銀分析師 Vivek Arya 則稱此為「長期多頭市場中的雜音」，維持 2030 年 AI 資本支出逾 3 兆美元的看法。</p>
+    <p>日本銀行政策委員會於 9 月 17-18 日召開，聲明預計 18 日日本時間中午前後公布、總裁記者會 15:30。隔夜指數交換（OIS）對本次升息一碼至 1.25% 的定價約 97%，現行 0.75% 的政策利率已是 1995 年以來最高，再升一碼將把日本利率推到 1990 年代中期以來未見的水準。這是本輪緊縮循環中，日銀首度與聯準會在同一週公布決議——Fed 於美東 9/16、BOE 於 9/17、BOJ 於 9/18，三大央行在 72 小時內接連表態。日銀 4 月會議已把通膨預測由 1.9% 上修至 2.8%，明確點名中東衝突推升的能源價格風險；而日圓偏弱推升進口成本、壓縮家計實質所得，正是委員會轉趨鷹派的主因。</p>
   </div>
   <div class="field ceo">
     <div class="field-label">CEO Insight</div>
-    <p>這是 AI 產業第一次由三大實驗室的執行長同時對「速度」本身踩煞車，市場用一天 5.9% 的費半跌幅告訴你它如何解讀：需求的「時間軸」出現了不確定性。對供應鏈與資料中心相關業者，需要區分兩件事——訂單不會因為一篇文章消失，但客戶對「下一代模型何時需要下一代晶片」的假設可能被拉長，交付排程與產能擴張的節奏應保留彈性。對 AI 應用端企業，反而是正面訊號：若前沿開發真的放慢，現有模型的部署週期會拉長、平台切換成本下降，正是把試點專案轉為正式生產的窗口。</p>
+    <p>日圓利差交易（carry trade）是這件事對企業最直接的傳導路徑：日本利率每往上一階，以日圓為融資貨幣的全球槓桿部位就少一分吸引力，而這些資金過去兩年大量停泊在美國科技股與新興亞洲。若 BOJ 升息與 Fed 升息在同一週同時落地，套利利差不會明顯收斂、但波動度會放大，週五（9/18）亞洲盤的匯率跳動幅度應預先納入資金調度假設。有日圓計價負債或對日採購的企業，本週不宜留未避險的敞口；以日本為出口市場者，則要留意日圓若因升息走強，反而對台廠報價有利。</p>
   </div>
-  <div class="card-source">來源：<a href="https://darioamodei.com/post/we-must-pace-the-frontier" target="_blank" rel="noopener">Dario Amodei 原文</a>、<a href="https://www.axios.com/2026/09/12/anthropic-ai-amodei-pacing" target="_blank" rel="noopener">Axios</a>、<a href="https://www.cnbc.com/2026/09/13/china-dilemma-ai-slowdown-anthropic.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.schwab.com/learn/story/stock-market-update-open" target="_blank" rel="noopener">Charles Schwab</a>、<a href="https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/09/61770221/bofa-ai-slowdown-noise-semiconductor-stocks-upside-secular-bull-market" target="_blank" rel="noopener">Benzinga／BofA</a></div>
+  <div class="card-source">來源：<a href="https://www.financecalendar.com/bank-of-japan-rate-decisions/" target="_blank" rel="noopener">Finance Calendar</a>、<a href="https://centralbank.watch/bank-of-japan/" target="_blank" rel="noopener">CentralBank.watch／BoJ Watch Tool</a>、<a href="https://www.techtimes.com/articles/327491/20260914/bank-japan-september-hike-arrives-fed-yen-carry-trade-alert-tech-investors.htm" target="_blank" rel="noopener">Tech Times</a>、<a href="https://www.boj.or.jp/en/about/calendar/index.htm" target="_blank" rel="noopener">日本銀行行事曆</a></div>
 </article>
 <article class="card watch">
   <div class="card-top">
     <span class="sig-id mono">SIG-05</span>
-    <span class="badge watch">WATCH</span>
-    <span class="card-time mono">2026.09.14</span>
-  </div>
-  <h3 class="headline">川普在 All-In Summit 現場致電黃仁勳、被開擴音，稱 AI 風險「整件事是騙局」；Truth Social 點名批評 Amodei、拒絕任何 AI 護欄</h3>
-  <div class="field">
-    <div class="field-label">Why It Matters</div>
-    <p>9 月 14 日（一）川普總統在洛杉磯 All-In Summit 會場致電正在台上的輝達執行長黃仁勳，黃仁勳將通話開擴音，約五分鐘的對話中川普表示 AI 危險論「整件事是騙局」，資料中心是「未來 20、25 年的石油」，放慢產業腳步只會讓中國得利；共同主持人 Chamath Palihapitiya 形容場面「超現實」。同日川普在 Truth Social 發文，稱 AI 唯一需要的「控制或護欄」是「一位強大且聰明（高智商！）的總統」，並點名 Amodei「現在假裝成完美的小天使」，把民眾對資料中心的反彈歸咎於「病態的陰謀」。另一方面，Anthropic、OpenAI 與 Google 自 7 月起已多次召開工作小組會議討論成立產業主導的 AI 標準機構；Altman 在全員大會上表示支持設立測試與審計機構，但認為各大實驗室可能必須在沒有美國政府支持下自行建立。</p>
-  </div>
-  <div class="field ceo">
-    <div class="field-label">CEO Insight</div>
-    <p>美國行政部門與三大 AI 實驗室在「是否需要護欄」上正式分道，這對企業採購 AI 的意涵是：未來 12 個月的合規框架不會來自華府，而會來自產業自組的標準機構、歐盟 AI 法案，以及各州立法的拼貼。實務上，建議把「供應商是否加入產業標準機構、是否接受第三方預發布審計」納入 AI 供應商評選清單，並在合約中預留合規變動的調整條款；同時注意川普把 AI 監管與中國競爭掛鉤的敘事——這意味著出口管制與資料中心用電政策仍會是最直接影響供應鏈的政策槓桿。</p>
-  </div>
-  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/14/trump-phones-nvidia-huang-all-in-calls-data-center-opposition-hoax.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.nbcnews.com/politics/donald-trump/nvidia-ceo-jensen-huang-ai-speakerphone-all-hands-meeting-rcna597761" target="_blank" rel="noopener">NBC News</a>、<a href="https://www.cnbc.com/2026/09/14/trump-ai-data-centers-anthropic-dario-amodei.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.axios.com/2026/09/14/trump-ai-safety-anthropic-dario-amodei" target="_blank" rel="noopener">Axios</a>、<a href="https://qz.com/anthropic-google-openai-ai-standards-body-091426" target="_blank" rel="noopener">Quartz</a></div>
-</article>
-<article class="card watch">
-  <div class="card-top">
-    <span class="sig-id mono">SIG-06</span>
     <span class="badge watch">WATCH</span>
     <span class="card-time mono">2026.09.11 公布</span>
   </div>
@@ -450,7 +455,7 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 </article>
 <article class="card watch">
   <div class="card-top">
-    <span class="sig-id mono">SIG-07</span>
+    <span class="sig-id mono">SIG-06</span>
     <span class="badge watch">WATCH</span>
     <span class="card-time mono">2026.09.10 決議・09.16 生效</span>
   </div>
@@ -467,54 +472,71 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 </article>
 <article class="card watch">
   <div class="card-top">
-    <span class="sig-id mono">SIG-08</span>
+    <span class="sig-id mono">SIG-07</span>
     <span class="badge watch">WATCH</span>
-    <span class="card-time mono">2026.09.10-14</span>
+    <span class="card-time mono">2026.09.17 12:00 倫敦</span>
   </div>
-  <h3 class="headline">甲骨文 FY27Q1 剩餘履約義務衝上 6,640 億美元、OCI 營收年增 121%；Ellison 一日內撤回 75 億美元持股出售計畫</h3>
+  <h3 class="headline">英格蘭銀行 9/17 決議：7 月以 6-3 維持 3.75%，三位委員已投票升息；7 月 CPI 回升至 2.9% 為 3 月以來首度加速</h3>
   <div class="field">
     <div class="field-label">Why It Matters</div>
-    <p>甲骨文 9 月 10 日公布 2027 財年第一季財報：總營收 193 億美元、年增 30%；雲端營收 116.1 億美元、年增 62%，其中雲端基礎設施（OCI）營收 74 億美元、年增 121%；非 GAAP 每股盈餘 1.92 美元、優於預期的 1.73 美元，非 GAAP 營業利益 82 億美元、營業利益率 42%。剩餘履約義務（RPO）達 6,640 億美元，年增 2,090 億、季增 260 億，其中約一半與 OpenAI 相關；本季新增逾 300 億美元 AI 雲端合約。全年展望上修為營收至少 900 億美元、調整後 EPS 8.10 美元。股價盤後一度漲近 8%。但 9 月 12 日創辦人 Larry Ellison 在公司揭露其 6 月 22 日設立、最多出售 5,000 萬股（約 75 億美元）交易計畫的隔天即宣布取消，稱未售出任何股份、亦無其他出售計畫，公司未說明原因；週一盤前甲骨文仍隨 AI 賣壓下跌 3.58%。</p>
+    <p>英格蘭銀行貨幣政策委員會將於 9 月 17 日英國時間中午 12:00 公布決議。上一次會議（7 月 30 日）以 6 比 3 維持基準利率 3.75%，Huw Pill、Megan Greene 與 Catherine Mann 三位委員投票升息至 4.00%，理由是能源價格走高可能使通膨更具黏性。物價數據則在轉向：英國 7 月 CPI 年增率回升至 2.9%、高於 6 月的 2.6%，是 2026 年 3 月以來首度加速，總裁 Bailey 雖曾表示通膨下滑快於預期，但也警告中東衝突讓能源價格「居高且波動」。多數經濟學家仍預期本次維持 3.75% 不動，但投票升息的少數派持續擴大，加上 Brent 站上 105-108 美元，升息機率已較夏季明顯上升。</p>
   </div>
   <div class="field ceo">
     <div class="field-label">CEO Insight</div>
-    <p>6,640 億的 RPO 與「一半綁在 OpenAI」是同一件事的兩面：能見度極高，但集中度也極高。當 Amodei 的減速論與 OpenAI 延至 2027 年才上市的消息同週出現，市場對這筆積壓訂單的「可實現性」而非「規模」開始重新定價，Ellison 撤回出售計畫也可視為對股價敏感度的回應。對企業經營者的借鏡是：以單一超級客戶撐起的成長敘事，在利率 5% 的環境下會被要求更高的現金轉換證明。若貴公司的 AI 基礎設施合約有類似的客戶集中，現在就該準備投資人會問的下一個問題——「積壓訂單何時變成現金流」。</p>
+    <p>對有英國與歐洲業務的企業，重點不是這次升不升，而是「三家央行在 48 小時內同向偏鷹」的組合會如何重訂全球資金成本的基準線。ECB 已於 9/10 升息、今日生效，Fed 今晚幾乎確定升息，BOE 若再出現 5-4 之類的接近投票，市場將直接把英國年底前的升息定價往上拉，英鎊計價的應收與借款成本都要重估。實務上請在本週結束前完成三件事：英鎊與歐元的遠期避險展期、浮動利率負債的利息敏感度測算、以及對英國客戶付款條件的重新檢視（利率上升期的延遲付款風險會同步上升）。</p>
   </div>
-  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/10/oracle-orcl-q1-earnings-report-2027.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.investing.com/news/company-news/oracle-q1-fy2027-slides-cloud-infrastructure-surges-121-guides-90b-93CH-4897025" target="_blank" rel="noopener">Investing.com</a>、<a href="https://www.bloomberg.com/news/articles/2026-09-12/larry-ellison-scraps-plan-to-sell-up-to-50-million-oracle-shares" target="_blank" rel="noopener">Bloomberg</a>、<a href="https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock/" target="_blank" rel="noopener">TechCrunch</a></div>
+  <div class="card-source">來源：<a href="https://hoa.org.uk/news/interest-rate-predictions-2/" target="_blank" rel="noopener">HomeOwners Alliance</a>、<a href="https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate" target="_blank" rel="noopener">英格蘭銀行</a>、<a href="https://commonslibrary.parliament.uk/research-briefings/sn02802/" target="_blank" rel="noopener">House of Commons Library</a>、<a href="https://britsavvy.co.uk/bank-of-england-september-2026-preview/" target="_blank" rel="noopener">BritSavvy</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">SIG-08</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.16 08:30 美東 公布</span>
+  </div>
+  <h3 class="headline">美國 8 月零售銷售今晚與 FOMC 同日公布：7 月月減 0.6% 大幅不如預期，失業率持穩 4.1%、初領失業金 20.6 萬人</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>美國普查局訂於 9 月 16 日美東時間上午 8:30 公布 8 月零售銷售初值，與聯準會決議同日落在市場眼前。前一份報告（7 月）月減 0.6%，遠低於市場預估的月增 0.1%，並逆轉 6 月 0.2% 的增幅，是今年最弱的一次。勞動市場則維持「低招聘、低解僱」格局：勞工統計局 8 月就業報告顯示失業率持平於 4.1%、失業人數約 700 萬人；9 月第一週初領失業金人數 20.6 萬人，較前週減少 1,000 人、符合 20.5 萬的預期，續領失業金 177.4 萬人亦低於預期，距 7 月中旬 18.9 萬人的近 60 年低點不遠。市場研究機構 Coresight 則預估全年零售銷售年增率可維持 4% 以上。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>今晚 8:30 的零售數字會在 FOMC 決議前六小時抵達，是市場今天唯一能拿到的新硬數據，也是「消費者是否已被 3.4% 通膨與 5% 殖利率壓垮」的第一手答案。若 8 月連兩個月走弱，升息一碼會被解讀成政策失誤風險升高，週期性消費與零售通路的估值壓力立刻浮現；若反彈，則坐實「通膨黏、需求穩」的組合，年底前再升一次的定價會被拉高。對經營端的意義很實際：Q4 的備貨與促銷計畫應準備兩套——需求轉弱時以去化庫存優先，需求穩健時則守住毛利、把上升的能源與物流成本往售價傳導。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.financecalendar.com/event/us-retail-sales-august-2026/" target="_blank" rel="noopener">Finance Calendar</a>、<a href="https://www.census.gov/retail/marts/www/marts_current.pdf" target="_blank" rel="noopener">美國普查局</a>、<a href="https://www.bls.gov/news.release/empsit.nr0.htm" target="_blank" rel="noopener">美國勞工統計局</a>、<a href="https://tradingeconomics.com/united-states/jobless-claims" target="_blank" rel="noopener">Trading Economics</a></div>
 </article>
 <article class="card watch">
   <div class="card-top">
     <span class="sig-id mono">SIG-09</span>
     <span class="badge watch">WATCH</span>
-    <span class="card-time mono">2026.09.14 報導</span>
+    <span class="card-time mono">2026.09.15 台股收盤</span>
   </div>
-  <h3 class="headline">Palantir、輝達、Booz Allen 對 Anthropic 模型設限，要求零資料保留承諾；Anthropic 9/1 推出 Enterprise Frontier Safeguards、Fable 5 先給 ZDR</h3>
+  <h3 class="headline">台股 9/15 量縮跌 351.03 點收 45,511.49、外資連四賣，期貨淨空單逾 8.3 萬口；亞洲資金在三大央行決議週全面減碼</h3>
   <div class="field">
     <div class="field-label">Why It Matters</div>
-    <p>The Information 9 月 14 日報導，Palantir 要求 Anthropic 提供零資料保留（zero data retention）保證，否則不在其平台上開放 Anthropic 模型；輝達將 Anthropic 模型限制於較不敏感的內部任務、專有工作偏好自家 Nemotron 模型；Booz Allen 則禁止員工在涉及專有資料的網路安全專案使用 Anthropic 的商用模型。爭議源於 Anthropic 6 月隨 Fable 5 推出的 30 天資料保留政策——公司稱需要使用紀錄以偵測跨多個工作階段的複雜攻擊。Anthropic 於 9 月 1 日宣布 Enterprise Frontier Safeguards（EFS），讓企業客戶把活動資料存在自己的 Amazon S3、Azure Blob 或 Google Cloud Storage 中、使用自己的加密金鑰，與逾 100 家客戶（含高盛、摩根士丹利、花旗、美銀、富國）共同開發，不另收費，今年秋季起分階段推出；EFS 就位前，合格客戶在 Fable 5 與 5.1 上可先取得零資料保留。</p>
+    <p>9 月 15 日台股加權指數早盤一度翻紅攻上 45,009.85 之上，隨後賣壓湧現，終場收 45,511.49 點、下跌 351.03 點（-0.77%），成交值縮至約 6,047 億元，上漲僅 442 家、下跌 1,360 家；外資連續第四個交易日賣超，台指期未平倉淨空單逾 8.3 萬口。亞洲其他市場同樣觀望：日經 225 收在 63,484.10 點、幾乎平盤，南韓與香港同步窄幅整理。減碼的共同背景是同一週內三大央行接連決議——聯準會（台北時間 9/17 02:00）、英格蘭銀行（9/17）與日本銀行（9/18）——在結果出爐前，外資普遍選擇降低新興亞洲的曝險與提高現金比重。今日（9/16）台股仍在盤中，本頁不採用盤中數據。</p>
   </div>
   <div class="field ceo">
     <div class="field-label">CEO Insight</div>
-    <p>這是企業 AI 採購從「模型能力競賽」轉向「資料主權談判」的明確訊號：連輝達與 Palantir 這種最靠近 AI 核心的公司，都把資料保留條款當成拒絕採用的理由。對所有正在簽署或續約 AI 服務的企業，建議立即檢視三件事：一、供應商的保留期限與用途（安全偵測 vs. 訓練）是否分開寫明；二、是否有客戶自持儲存與自管金鑰的選項及其時程；三、若供應商政策變更，合約是否給你退出或降級的權利。EFS 這種「客戶自持日誌」架構很可能成為金融與政府採購的新基準，採購方可以直接把它當談判起點。</p>
+    <p>外資連四賣在指數層面看起來像是空頭訊號，但拆開來看是「事件前的部位管理」而非「基本面觀點改變」——同一週台積電才公布 53.3% 的年增率。企業真正要處理的是匯率：新台幣在升息預期與外資匯出的雙重壓力下，短線波動度會放大到 FOMC 與 BOJ 決議之後，出口商的避險比例建議維持偏高、並把避險天期至少延到 9 月底。另一個容易被忽略的是融資成本：台股籌碼面轉弱時，有質押或融資部位的大股東與中小企業主，應提前確認維持率緩衝，不要在決議夜被迫處分。</p>
   </div>
-  <div class="card-source">來源：<a href="https://www.theinformation.com/articles/anthropic-data-fears-prompt-nvidia-palantir-booz-allen-restrict-model-use" target="_blank" rel="noopener">The Information</a>、<a href="https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html" target="_blank" rel="noopener">Yahoo Finance／Reuters</a>、<a href="https://www.anthropic.com/news/enterprise-frontier-safeguards" target="_blank" rel="noopener">Anthropic 公告</a>、<a href="https://www.cnbc.com/2026/09/01/anthropic-data-retention.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.helpnetsecurity.com/2026/09/02/anthropic-enterprise-frontier-safeguards/" target="_blank" rel="noopener">Help Net Security</a></div>
+  <div class="card-source">來源：<a href="https://newtalk.tw/news/view/2026-09-15/1059932" target="_blank" rel="noopener">Newtalk 新聞</a>、<a href="https://tw.stock.yahoo.com/quote/%5ETWII" target="_blank" rel="noopener">Yahoo 股市</a>、<a href="https://www.financecalendar.com/bank-of-japan-rate-decisions/" target="_blank" rel="noopener">Finance Calendar／BOJ 行事曆</a>、<a href="https://www.mortgageonefinance.co.uk/news/next-bank-of-england-meeting" target="_blank" rel="noopener">Mortgage One／BOE 行事曆</a></div>
 </article>
 <article class="card watch">
   <div class="card-top">
     <span class="sig-id mono">SIG-10</span>
     <span class="badge watch">WATCH</span>
-    <span class="card-time mono">2026.09.10 公布・09.15 台股收盤</span>
+    <span class="card-time mono">2026.09.15 收盤</span>
   </div>
-  <h3 class="headline">台積電 8 月營收 5,148.1 億台幣創單月新高、年增 53.3%；台股 9/15 量縮跌 351 點收 45,511.49，外資連四賣</h3>
+  <h3 class="headline">工業金屬同步走高：銅 9/15 升至 6.39 美元/磅、本週稍早再創新高，鋁漲至 3,348 美元/噸為 8 月以來最高</h3>
   <div class="field">
     <div class="field-label">Why It Matters</div>
-    <p>台積電 9 月 10 日公布 8 月合併營收約新台幣 5,148.1 億元，月增 10.1%、年增 53.3%，為連續第四個月成長並創單月歷史新高，以美元計約 163.5 億美元；今年 1 至 8 月累計營收 3 兆 3,868.7 億元、年增 39.3%，AI 相關需求仍是主要驅動。但台股在 AI 賣壓與升息預期下承壓：9 月 15 日加權指數早盤一度翻紅攻上 46,009.85，隨後賣壓湧現，終場收 45,511.49 點、下跌 351.03 點（-0.77%），成交值縮至約 6,047 億元，僅 442 家上漲、1,360 家下跌，外資連續第四日賣超、期貨空單逾 8.3 萬口。今日（9/16）台股尚在盤中，本頁不採用盤中數據。</p>
+    <p>LME 與 COMEX 金屬價格在 Fed 決議前同步走強。銅 9 月 15 日收 6.39 美元／磅、單日上漲 0.94%，本週稍早因交易商把貨源導向美國倉庫以套取關稅造成的當地溢價，推升全球現貨緊俏、價格再創新高；今年中銅價一度衝上每噸 14,527 美元的歷史紀錄。鋁升至每噸 3,348 美元，是 8 月以來最高，第三季預測值 3,800 美元、第四季 3,700 美元，主因是中東衝突造成的供給中斷——海灣合作理事會（GCC）7 月產量年減 44%。銅的冶煉同樣受制於中東：該區是硫磺與硫酸的主要來源，而硫酸是濕法煉銅的關鍵原料。鋼鐵則呈現區域分化，全球熱軋捲基準價約每噸 1,186 美元，美歐因關稅維持高檔，中國則受房地產拖累而下跌。</p>
   </div>
   <div class="field ceo">
     <div class="field-label">CEO Insight</div>
-    <p>「基本面創高、股價回檔」的組合在台股是熟悉的劇本，但這次的背景不同：費半單日 5.9% 的跌幅來自對 AI 需求「節奏」的懷疑而非「規模」，台積電 53% 的年增率正是這個懷疑最有力的反證。對台灣供應鏈企業，短線該做的不是追隨指數情緒，而是確認客戶的拉貨節奏是否有任何實質變化——目前所有公開數據都指向沒有。中期而言，外資連四賣加上升息預期，代表新台幣與資金面的壓力會延續到 FOMC 之後，出口商的匯率避險比例可以維持偏高。</p>
+    <p>金屬這條線把「地緣風險」與「關稅結構」兩件事同時搬進了製造業的成本表，而且傳導速度比油價慢、黏性卻更高——原物料合約通常以季或半年計價，現在鎖定的價格會決定明年上半年的毛利。三個動作建議本月內完成：一、把 2027 年預算中的銅、鋁假設直接改用現貨加 10% 的壓力情境重跑；二、對美國出貨的金屬密集產品，重新檢視關稅套利造成的區域價差，能在美國本地採購的部分提前議價；三、與客戶的長約若無原物料連動條款，趁這一波尚未全面反映前補上，否則明年將由製造端獨力吸收。</p>
   </div>
-  <div class="card-source">來源：<a href="https://pr.tsmc.com/english/news/3340" target="_blank" rel="noopener">台積電新聞稿</a>、<a href="https://finance.yahoo.com/markets/stocks/articles/tsmc-august-revenue-rises-53-102300997.html" target="_blank" rel="noopener">Yahoo Finance</a>、<a href="https://newtalk.tw/news/view/2026-09-15/1059932" target="_blank" rel="noopener">Newtalk 新聞</a>、<a href="https://tw.stock.yahoo.com/quote/%5ETWII" target="_blank" rel="noopener">Yahoo 股市</a></div>
+  <div class="card-source">來源：<a href="https://tradingeconomics.com/commodity/copper" target="_blank" rel="noopener">Trading Economics／銅</a>、<a href="https://tradingeconomics.com/commodity/aluminum" target="_blank" rel="noopener">Trading Economics／鋁</a>、<a href="https://www.jpmorgan.com/insights/global-research/commodities/aluminum-steel-copper-prices" target="_blank" rel="noopener">J.P. Morgan Research</a>、<a href="https://www.lseg.com/en/insights/data-analytics/aluminium-copper-rally-fuelled-by-structural-strains-political-uncertainty" target="_blank" rel="noopener">LSEG</a></div>
 </article>
 <article class="card mon">
   <div class="card-top">
@@ -537,23 +559,6 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
   <div class="card-top">
     <span class="sig-id mono">SIG-12</span>
     <span class="badge mon">MONITOR</span>
-    <span class="card-time mono">2026.09.09 發表・09.18 開賣</span>
-  </div>
-  <h3 class="headline">Apple 首款摺疊機 iPhone Duo 亮相、iPhone 18 Pro 定價 1,199 美元；新任執行長 Ternus 首場主題演講，自研 C2 數據機同步登場</h3>
-  <div class="field">
-    <div class="field-label">Why It Matters</div>
-    <p>Apple 於 9 月 9 日在 Apple Park 的 Steve Jobs Theater 舉行「Surprise and Shine」發表會，這是 John Ternus 9 月 1 日接任執行長後的首場主題演講。發表產品包括 iPhone 18 Pro 與 18 Pro Max（Pro 起價 1,199 美元）、首款書本式摺疊 iPhone「iPhone Duo」（外螢幕約 5.5 吋、展開約 7.8 吋 OLED），以及 Apple Watch Series 12、Apple Watch Ultra 4 與 AirPods 5。Apple 同時公布第二代自研數據機 C2，將搭載於 iPhone Duo。預購已於 9 月 12 日（六）開始，旗艦機型預定 9 月 18 日（五）開賣，摺疊機的上市時程可能不同。</p>
-  </div>
-  <div class="field ceo">
-    <div class="field-label">CEO Insight</div>
-    <p>Apple 在利率 5%、消費者價格敏感度上升的時點推出 1,199 美元起的 Pro 與價格更高的摺疊機，本質上是對高端消費韌性的一次壓力測試，9 月 18 日開賣後的首週銷售與換機週期將是觀察美國高端消費最即時的指標。對供應鏈，摺疊機的良率與初期出貨量比 Pro 系列更值得追蹤——它決定的是 2027 年新產品線的產能配置。對零售與電信業者，Ternus 時代的首款產品組合顯示 Apple 仍以硬體差異化（摺疊、自研數據機）而非 AI 功能為主軸，短期內 AI 手機的替換動能不宜高估。</p>
-  </div>
-  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/09/apple-event-today-live-updates.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://9to5mac.com/2026/08/26/apple-officially-announces-iphone-18-pro-foldable-event/" target="_blank" rel="noopener">9to5Mac</a>、<a href="https://www.macrumors.com/guide/apple-september-2026-what-to-expect/" target="_blank" rel="noopener">MacRumors</a>、<a href="https://www.forbes.com/sites/davidphelan/2026/09/06/apple-iphone-18-pro-release-date-schedule-your-complete-september-countdown/" target="_blank" rel="noopener">Forbes</a></div>
-</article>
-<article class="card mon">
-  <div class="card-top">
-    <span class="sig-id mono">SIG-13</span>
-    <span class="badge mon">MONITOR</span>
     <span class="card-time mono">2026.09.15 盤中</span>
   </div>
   <h3 class="headline">黃金跌至約 4,300 美元、五至六週低點，實體金價一度 4,263；比特幣約 76,900-77,200 美元，美元與殖利率雙升壓抑避險資產</h3>
@@ -569,20 +574,37 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 </article>
 <article class="card mon">
   <div class="card-top">
-    <span class="sig-id mono">SIG-14</span>
+    <span class="sig-id mono">SIG-13</span>
     <span class="badge mon">MONITOR</span>
-    <span class="card-time mono">2026.09.15</span>
+    <span class="card-time mono">2026.09.05-08</span>
   </div>
-  <h3 class="headline">軟銀東京股價反彈 7.5%、日經收平 63,484.10；Altman 表示 OpenAI 上市「可能等到明年」，記憶體族群等待美光 9/30 財報</h3>
+  <h3 class="headline">俄烏和談未獲突破：Witkoff、Kushner 先莫斯科後基輔，9/5-9/8 首都停火成立但戰線停火遭俄方拒絕</h3>
   <div class="field">
     <div class="field-label">Why It Matters</div>
-    <p>9 月 15 日日經 225 指數早盤大漲後回吐，終場小跌不到 0.1% 收 63,484.10；OpenAI 主要投資人軟銀集團反彈 7.5%（收 6,279 日圓），收復前一日 AI 賣壓的跌幅。軟銀反彈的觸媒是 OpenAI 執行長 Altman 在《Fortune》週六刊出的訪談中表示，公司「可能等到明年」才會上市；OpenAI 財務長 Sarah Friar 先前亦在內部會議表示將於「2027 年成為上市公司」，公司已於 6 月確認向 SEC 保密遞交 S-1，目標估值至少 1 兆美元、8 月年化營收已逾 400 億美元，但內部預估 2026 年虧損達 140 億美元、2030 年前後才能獲利。記憶體方面，美光將於 9 月 30 日公布財年第四季財報，市場預估營收約 508 億美元、年增約 350%，業界預期本季 DRAM 合約價季增 50%、NAND 季增 60%。韓國 KOSPI 因三星與 SK 海力士承壓、勉強守住 6,600。</p>
+    <p>美方特使 Steve Witkoff 與 Jared Kushner 於 9 月初先在莫斯科會見普丁，隨後經波蘭轉陸路抵達基輔，推動重啟俄烏和談。烏克蘭國防部隊奉命自 9 月 5 日起至 9 月 8 日觀察停火，普丁與澤倫斯基同意在談判期間暫停對彼此首都的攻擊。但烏方公開呼籲的「三天全面停火」遭普丁否認曾達成共識，俄方拒絕更廣泛的戰線停火提案，並重申烏軍須自頓內茨克剩餘地區撤出；烏方則拒絕單方面領土讓步、堅持要有安全保證。基輔與莫斯科兩地的會談最終未產生外交突破，僅維持首都層級的有限停火。</p>
   </div>
   <div class="field ceo">
     <div class="field-label">CEO Insight</div>
-    <p>軟銀單日 7.5% 的反彈幅度顯示，市場對 AI 資產的定價已進入「消息驅動、缺乏共識」的階段——同一批投資人週一因減速論拋售、週二因 IPO 延後而回補，這在邏輯上是矛盾的，反映的是部位管理而非基本面判斷。對企業而言，這種環境下的策略決策不應被市場情緒牽動：美光 9 月 30 日的財報與其對 DRAM 價格的展望，才是檢驗 AI 硬體需求是否真有「節奏放慢」的下一個硬數據。若貴公司有記憶體採購需求，合約價季增 50-60% 的預期意味著第四季成本鎖定應該提前，而不是等待可能不會來的回落。</p>
+    <p>這一輪談判的訊號是「戰爭形態改變，但不會結束」——首都停火成立、戰線停火破局，意味著能源與糧食基礎設施仍在射程內，而這正是歐洲天然氣與黑海穀物價格的風險來源。對企業的實務含意有二：一是歐洲能源成本的下行空間在談判有實質進展前不存在，明年歐洲廠區的電價假設不要押在「和平紅利」上；二是重建題材仍屬於期權而非訂單，任何以烏克蘭重建為前提的產能或人力投入，應設定在停火協議簽署後才啟動的觸發條件，而不是現在。</p>
   </div>
-  <div class="card-source">來源：<a href="https://ca.finance.yahoo.com/news/asian-shares-trade-mixed-markets-042859536.html" target="_blank" rel="noopener">AP／Yahoo Finance</a>、<a href="https://www.brecorder.com/news/40439551/japans-nikkei-rises-as-softbank-rebounds-from-ai-led-selloff" target="_blank" rel="noopener">Business Recorder／Reuters</a>、<a href="https://www.tradingkey.com/analysis/stocks/more/262168018-japan-south-korea-stocks-kospi-nikkei225-softbank-skhynix-samsung-kioxia-jpy-tradingkey" target="_blank" rel="noopener">TradingKey</a>、<a href="https://forgeglobal.com/insights/openai-upcoming-ipo-news/" target="_blank" rel="noopener">Forge Global</a>、<a href="https://www.fool.com/investing/2026/09/14/prediction-micron-sept-30-earnings-memory-shortage/" target="_blank" rel="noopener">The Motley Fool</a></div>
+  <div class="card-source">來源：<a href="https://www.aljazeera.com/news/2026/9/5/russias-putin-meets-us-envoys-to-discuss-trump-proposal-to-end-ukraine-war" target="_blank" rel="noopener">Al Jazeera</a>、<a href="https://www.abc.net.au/news/2026-09-06/russia-ukraine-peace-talks-begin-in-kyiv/107121898" target="_blank" rel="noopener">ABC News</a>、<a href="https://www.pravda.com.ua/eng/news/2026/09/05/8052085/" target="_blank" rel="noopener">Ukrainska Pravda</a>、<a href="https://kyivindependent.com/units-of-ukraines-army-ordered-to-halt-fighting-as-us-envoys-set-to-visit-ukraine-russia/" target="_blank" rel="noopener">Kyiv Independent</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">SIG-14</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09 週期數據</span>
+  </div>
+  <h3 class="headline">航運成本維持高原：多數航商仍以好望角為預設航線，亞歐運價高於危機前 25-40%、亞美東線 15-25%，每櫃紅海溢價 800-1,500 美元</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>紅海的正常化進度遠慢於年初預期。截至 2026 年中，胡塞武裝的攻擊仍在持續，多數航商仍將繞行好望角作為預設航線；Maersk 等業者雖已完成經蘇伊士運河的測試航次，但情勢反覆、隨時可能逆轉。運價結構因此固化在高位：亞洲—歐洲航線較危機前高出 25-40%，亞洲—美東航線高出 15-25%；以美東櫃為例，紅海溢價約使每只貨櫃增加 800-1,500 美元的直接運費，外加 300-500 美元的保險與附加費。7 月旺季期間，受紅海危機、提前拉貨與航商跳港（blank sailing）三重因素疊加，每 FEU 運價一度升至 7,000 至 13,000 美元區間。今年 9 月伊朗攻擊荷姆茲船隻與沙烏地東西管線關閉，使波灣航段的戰爭險再度承壓。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>把運費當成「會回落的一次性成本」是過去兩年最貴的假設之一。目前的結構是繞行成為常態、保費成為固定項，這代表 2027 年的到岸成本模型應以好望角航程（多 10-14 天）與現行保費為基準，而不是以蘇伊士為基準再打折。三個具體動作：一、與貨代重談年度合約時，要求把戰爭險附加費拆成獨立可追溯項目，避免被包進運價後失去議價空間；二、對交期敏感的產品線，評估空運與海空聯運的比例上限並預先訂艙；三、庫存政策由「準時制」往「安全庫存」微調，多出的持有成本要和 5% 的資金成本一起計算——利率高的時候囤貨並不便宜。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.xeneta.com/blog/red-sea-return-what-it-means-for-2026-container-shipping-contract-rates" target="_blank" rel="noopener">Xeneta</a>、<a href="https://www.seatrade-maritime.com/containers/container-shipping-market-outlook-for-2026-a-red-sea-return-" target="_blank" rel="noopener">Seatrade Maritime</a>、<a href="https://suaidglobal.com/insights/red-sea-shipping-crisis-2026/" target="_blank" rel="noopener">Suaid Global</a>、<a href="https://marketsnxt.com/blog/shipping-cost-shock-red-sea-port-congestion-global-trade-2026/" target="_blank" rel="noopener">Markets NXT</a></div>
 </article>
 <article class="card mon">
   <div class="card-top">
@@ -602,10 +624,8 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
   <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/08/everbank-to-combine-with-wafd-in-3point9-billion-reverse-merger-.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.prnewswire.com/news-releases/wafd-inc-enters-into-a-3-9-billion-reverse-merger-transaction-with-everbank-financial-corp-302871589.html" target="_blank" rel="noopener">PR Newswire／WaFd 新聞稿</a>、<a href="https://intellizence.com/insights/merger-and-acquisition/largest-merger-acquisition-deals/" target="_blank" rel="noopener">Intellizence</a>、<a href="https://www.bloomberg.com/news/articles/2026-08-27/apollo-buys-into-atlantic-aviation-at-near-10-billion-valuation" target="_blank" rel="noopener">Bloomberg</a></div>
 </article>
       </div>
-    </div>
-
-<!-- SIDEBAR -->
-    <div class="side">
+  </main>
+  <aside class="side">
       <div class="panel">
         <h3>今日信號分布</h3>
         <div class="donut-wrap">
@@ -629,7 +649,6 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
           </div>
         </div>
       </div>
-
       <div class="panel">
         <h3>產業熱力</h3>
         <div class="heat-item">
@@ -641,8 +660,345 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
           <div class="heat-bar"><div class="heat-fill" style="width:94%;background:var(--red)"></div></div>
         </div>
         <div class="heat-item">
-          <div class="heat-top"><span>AI 減速論與晶片需求節奏</span><span class="heat-pct">90</span></div>
+          <div class="heat-top"><span>三大央行同週決議（Fed／BOE／BOJ）</span><span class="heat-pct">88</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:88%;background:var(--red)"></div></div>
+        </div>
+        <div class="heat-item">
+          <div class="heat-top"><span>工業金屬與關稅套利</span><span class="heat-pct">74</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:74%;background:var(--amber)"></div></div>
+        </div>
+        <div class="heat-item">
+          <div class="heat-top"><span>紅海繞行與波灣戰爭險</span><span class="heat-pct">70</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:70%;background:var(--amber)"></div></div>
+        </div>
+        <div class="heat-item">
+          <div class="heat-top"><span>中國內需疲弱與出口外溢</span><span class="heat-pct">52</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:52%;background:var(--blue)"></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>行動清單</h3>
+        <ul class="action-list">
+          <li>今晚 FOMC 準備「升一碼之後」的兩套劇本：點陣圖暗示年內再升 vs. 只升一次並強調資料依賴；明早亞洲開盤前完成融資成本與匯率避險部位確認</li>
+          <li>以 5% 無風險利率重跑所有仍用 4% 上下折現率的專案評估與併購模型；年底前有再融資需求者，停止等待「利率回落」</li>
+          <li>本週三大央行 48 小時內接連表態（Fed 9/17 台北凌晨、BOE 9/17、BOJ 9/18），日圓、英鎊與新台幣的遠期避險應在週四前完成展期</li>
+          <li>年度預算的能源與物流成本假設直接以 Brent 100-110 美元重做；經紅海／波灣航線的採購與出貨立即確認保險條款與替代航線報價</li>
+          <li>2027 年預算的銅、鋁假設改以現貨加 10% 的壓力情境重跑；對美出貨的金屬密集產品重新檢視關稅造成的區域價差</li>
+          <li>把能源附加費機制從物流合約擴大到能源敏感產品線，並提前向 B2B 客戶溝通成本傳導時程，避免年底一次性調價</li>
+          <li>歐洲廠區明年電價假設不要押在俄烏「和平紅利」上；以烏克蘭重建為前提的投入，設定在停火協議簽署後才啟動</li>
+          <li>追蹤今晚 20:30（美東 08:30）美國 8 月零售銷售，作為消費端是否已被通膨與高利率壓垮的第一手答案</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>今日定調</h3>
+        <div class="tone-box">
+          <p>9 月 16 日（週三）是本季貨幣政策最密集的一天，也是全球資金成本重新定錨的起點。聯準會將在台北時間 17 日凌晨 2 點公布決議，市場定價 86-92% 升息一碼、把聯邦資金利率推升至 3.75%-4.00%，這將是 2023 年 7 月以來首次升息；英格蘭銀行 9/17 中午接力，7 月已有三位委員投票升息、英國 7 月 CPI 回升至 2.9%；日本銀行 9/18 收尾，OIS 給出約 97% 的升息機率、政策利率將升至 1995 年以來最高的 1.25%。三大央行在 72 小時內同向偏鷹，是本輪循環的第一次。市場已先行表態：10 年期美債殖利率 9 月 15 日盤中觸及 5.04%，為 2007 年 7 月以來首度站上 5%；美股連兩日收黑，道瓊跌 328.09 點收 52,093.11、標普跌 0.45% 收 7,585.73、那斯達克跌 0.78% 收 25,981.57，歐股 STOXX 600 跌至三個月低點；台股量縮跌 351.03 點收 45,511.49、外資連四賣。推升殖利率的是兩股力量：一是能源，沙烏地 9 月 11 日因無人機攻擊關閉每日 500 萬桶的東西原油管線，與伊朗 9 月 9 日攻擊荷姆茲 10 艘船隻疊加，Brent 一度衝上 108-109 美元、15 日仍在 107 美元附近；二是數據，8 月 CPI 年增 3.4%、汽油月漲 3.9%，即便核心 CPI 年增 2.4% 已是 2021 年 3 月以來最低，Fed 仍無法「看穿」油價。地緣風險則維持在不會消失也不會升級的狀態：俄烏在美方特使穿梭下僅換到 9/5-9/8 的首都停火，戰線停火遭俄方拒絕；紅海多數航商仍以好望角為預設航線，亞歐運價高於危機前 25-40%。工業金屬同步走高——銅 9/15 升至 6.39 美元／磅、鋁升至 3,348 美元／噸，關稅套利與中東硫酸供給雙重推動。今晚美東 8:30 的 8 月零售銷售（前值月減 0.6%）會在決議前六小時抵達，是市場今天唯一的新硬數據。結論：市場正在同時定價「5% 的資金成本」、「100 美元以上的油價」與「全球同步緊縮」三重壓力，市場緊張指數升至 5/5；今晚 Warsh 的點陣圖與記者會措辭，將決定這是階段性高點還是新區間的起點。</p>
+        </div>
+      </div>
+  </aside>
+</div>
+
+<div class="layout tab-panel" id="panel-tech" role="tabpanel" aria-labelledby="tab-tech" hidden>
+  <main>
+      <div class="section-heading">
+        <h2>Top Signals</h2>
+        <span class="section-sub">15</span>
+      </div>
+      <div class="signals" id="signals-tec">
+<article class="card crit">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-01</span>
+    <span class="badge crit">CRITICAL</span>
+    <span class="card-time mono">2026.09.12-15</span>
+  </div>
+  <h3 class="headline">Amodei 週末發表〈We Must Pace the Frontier〉呼籲全球放慢前沿 AI 開發，Altman、Hassabis、Musk 連署；費半週一重挫 5.9%、輝達跌 3.36%</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>Anthropic 執行長 Dario Amodei 於 9 月 12 日（六）發表〈We Must Pace the Frontier〉，主張全球協調放慢前沿模型開發，以降低「失去對 AI 系統控制」及「被用於網路攻擊與生物恐怖主義」的風險，並強調遞迴式自我改進（AI 設計或訓練自己的後繼者）「必須極為謹慎地進行，甚至不該進行」。OpenAI 執行長 Sam Altman 當日在 X 表示同意「pace the frontier」，Google DeepMind 的 Demis Hassabis 稱「方向正確」，Elon Musk 亦表態支持。Amodei 自己承認中國是「最棘手的兩難」——若美方自我約束而中國不跟進，可能導致對方取得地緣主導權；中國官媒環球時報則批評此議為「散播恐懼」。市場的反應直接而劇烈：9 月 14 日（一）費城半導體指數重挫 5.9%，輝達跌 3.36%（市值蒸發約 1,766 億美元）、博通跌 4.77%、AMD 跌 4.4%，那斯達克綜合跌 1.09%、標普跌 0.78%。美銀分析師 Vivek Arya 則稱此為「長期多頭市場中的雜音」，維持 2030 年 AI 資本支出逾 3 兆美元的看法。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>這是 AI 產業第一次由三大實驗室的執行長同時對「速度」本身踩煞車，市場用一天 5.9% 的費半跌幅告訴你它如何解讀：需求的「時間軸」出現了不確定性。對供應鏈與資料中心相關業者，需要區分兩件事——訂單不會因為一篇文章消失，但客戶對「下一代模型何時需要下一代晶片」的假設可能被拉長，交付排程與產能擴張的節奏應保留彈性。對 AI 應用端企業，反而是正面訊號：若前沿開發真的放慢，現有模型的部署週期會拉長、平台切換成本下降，正是把試點專案轉為正式生產的窗口。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://darioamodei.com/post/we-must-pace-the-frontier" target="_blank" rel="noopener">Dario Amodei 原文</a>、<a href="https://www.axios.com/2026/09/12/anthropic-ai-amodei-pacing" target="_blank" rel="noopener">Axios</a>、<a href="https://www.cnbc.com/2026/09/13/china-dilemma-ai-slowdown-anthropic.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.schwab.com/learn/story/stock-market-update-open" target="_blank" rel="noopener">Charles Schwab</a>、<a href="https://www.benzinga.com/analyst-stock-ratings/analyst-color/26/09/61770221/bofa-ai-slowdown-noise-semiconductor-stocks-upside-secular-bull-market" target="_blank" rel="noopener">Benzinga／BofA</a></div>
+</article>
+<article class="card crit">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-02</span>
+    <span class="badge crit">CRITICAL</span>
+    <span class="card-time mono">2026.09.14</span>
+  </div>
+  <h3 class="headline">川普在 All-In Summit 現場致電黃仁勳、被開擴音，稱 AI 風險「整件事是騙局」；Truth Social 點名批評 Amodei、拒絕任何 AI 護欄</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>9 月 14 日（一）川普總統在洛杉磯 All-In Summit 會場致電正在台上的輝達執行長黃仁勳，黃仁勳將通話開擴音，約五分鐘的對話中川普表示 AI 危險論「整件事是騙局」，資料中心是「未來 20、25 年的石油」，放慢產業腳步只會讓中國得利；共同主持人 Chamath Palihapitiya 形容場面「超現實」。同日川普在 Truth Social 發文，稱 AI 唯一需要的「控制或護欄」是「一位強大且聰明（高智商！）的總統」，並點名 Amodei「現在假裝成完美的小天使」，把民眾對資料中心的反彈歸咎於「病態的陰謀」。另一方面，Anthropic、OpenAI 與 Google 自 7 月起已多次召開工作小組會議討論成立產業主導的 AI 標準機構；Altman 在全員大會上表示支持設立測試與審計機構，但認為各大實驗室可能必須在沒有美國政府支持下自行建立。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>美國行政部門與三大 AI 實驗室在「是否需要護欄」上正式分道，這對企業採購 AI 的意涵是：未來 12 個月的合規框架不會來自華府，而會來自產業自組的標準機構、歐盟 AI 法案，以及各州立法的拼貼。實務上，建議把「供應商是否加入產業標準機構、是否接受第三方預發布審計」納入 AI 供應商評選清單，並在合約中預留合規變動的調整條款；同時注意川普把 AI 監管與中國競爭掛鉤的敘事——這意味著出口管制與資料中心用電政策仍會是最直接影響供應鏈的政策槓桿。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/14/trump-phones-nvidia-huang-all-in-calls-data-center-opposition-hoax.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.nbcnews.com/politics/donald-trump/nvidia-ceo-jensen-huang-ai-speakerphone-all-hands-meeting-rcna597761" target="_blank" rel="noopener">NBC News</a>、<a href="https://www.cnbc.com/2026/09/14/trump-ai-data-centers-anthropic-dario-amodei.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.axios.com/2026/09/14/trump-ai-safety-anthropic-dario-amodei" target="_blank" rel="noopener">Axios</a>、<a href="https://qz.com/anthropic-google-openai-ai-standards-body-091426" target="_blank" rel="noopener">Quartz</a></div>
+</article>
+<article class="card crit">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-03</span>
+    <span class="badge crit">CRITICAL</span>
+    <span class="card-time mono">2026.09.10-14</span>
+  </div>
+  <h3 class="headline">甲骨文 FY27Q1 剩餘履約義務衝上 6,640 億美元、OCI 營收年增 121%；Ellison 一日內撤回 75 億美元持股出售計畫</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>甲骨文 9 月 10 日公布 2027 財年第一季財報：總營收 193 億美元、年增 30%；雲端營收 116.1 億美元、年增 62%，其中雲端基礎設施（OCI）營收 74 億美元、年增 121%；非 GAAP 每股盈餘 1.92 美元、優於預期的 1.73 美元，非 GAAP 營業利益 82 億美元、營業利益率 42%。剩餘履約義務（RPO）達 6,640 億美元，年增 2,090 億、季增 260 億，其中約一半與 OpenAI 相關；本季新增逾 300 億美元 AI 雲端合約。全年展望上修為營收至少 900 億美元、調整後 EPS 8.10 美元。股價盤後一度漲近 8%。但 9 月 12 日創辦人 Larry Ellison 在公司揭露其 6 月 22 日設立、最多出售 5,000 萬股（約 75 億美元）交易計畫的隔天即宣布取消，稱未售出任何股份、亦無其他出售計畫，公司未說明原因；週一盤前甲骨文仍隨 AI 賣壓下跌 3.58%。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>6,640 億的 RPO 與「一半綁在 OpenAI」是同一件事的兩面：能見度極高，但集中度也極高。當 Amodei 的減速論與 OpenAI 延至 2027 年才上市的消息同週出現，市場對這筆積壓訂單的「可實現性」而非「規模」開始重新定價，Ellison 撤回出售計畫也可視為對股價敏感度的回應。對企業經營者的借鏡是：以單一超級客戶撐起的成長敘事，在利率 5% 的環境下會被要求更高的現金轉換證明。若貴公司的 AI 基礎設施合約有類似的客戶集中，現在就該準備投資人會問的下一個問題——「積壓訂單何時變成現金流」。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/10/oracle-orcl-q1-earnings-report-2027.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.investing.com/news/company-news/oracle-q1-fy2027-slides-cloud-infrastructure-surges-121-guides-90b-93CH-4897025" target="_blank" rel="noopener">Investing.com</a>、<a href="https://www.bloomberg.com/news/articles/2026-09-12/larry-ellison-scraps-plan-to-sell-up-to-50-million-oracle-shares" target="_blank" rel="noopener">Bloomberg</a>、<a href="https://techcrunch.com/2026/09/13/larry-ellison-cancels-7-5-billion-sale-of-oracle-stock/" target="_blank" rel="noopener">TechCrunch</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-04</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.14 報導</span>
+  </div>
+  <h3 class="headline">Palantir、輝達、Booz Allen 對 Anthropic 模型設限，要求零資料保留承諾；Anthropic 9/1 推出 Enterprise Frontier Safeguards、Fable 5 先給 ZDR</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>The Information 9 月 14 日報導，Palantir 要求 Anthropic 提供零資料保留（zero data retention）保證，否則不在其平台上開放 Anthropic 模型；輝達將 Anthropic 模型限制於較不敏感的內部任務、專有工作偏好自家 Nemotron 模型；Booz Allen 則禁止員工在涉及專有資料的網路安全專案使用 Anthropic 的商用模型。爭議源於 Anthropic 6 月隨 Fable 5 推出的 30 天資料保留政策——公司稱需要使用紀錄以偵測跨多個工作階段的複雜攻擊。Anthropic 於 9 月 1 日宣布 Enterprise Frontier Safeguards（EFS），讓企業客戶把活動資料存在自己的 Amazon S3、Azure Blob 或 Google Cloud Storage 中、使用自己的加密金鑰，與逾 100 家客戶（含高盛、摩根士丹利、花旗、美銀、富國）共同開發，不另收費，今年秋季起分階段推出；EFS 就位前，合格客戶在 Fable 5 與 5.1 上可先取得零資料保留。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>這是企業 AI 採購從「模型能力競賽」轉向「資料主權談判」的明確訊號：連輝達與 Palantir 這種最靠近 AI 核心的公司，都把資料保留條款當成拒絕採用的理由。對所有正在簽署或續約 AI 服務的企業，建議立即檢視三件事：一、供應商的保留期限與用途（安全偵測 vs. 訓練）是否分開寫明；二、是否有客戶自持儲存與自管金鑰的選項及其時程；三、若供應商政策變更，合約是否給你退出或降級的權利。EFS 這種「客戶自持日誌」架構很可能成為金融與政府採購的新基準，採購方可以直接把它當談判起點。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.theinformation.com/articles/anthropic-data-fears-prompt-nvidia-palantir-booz-allen-restrict-model-use" target="_blank" rel="noopener">The Information</a>、<a href="https://finance.yahoo.com/technology/ai/articles/palantir-nvidia-curb-ai-model-151108619.html" target="_blank" rel="noopener">Yahoo Finance／Reuters</a>、<a href="https://www.anthropic.com/news/enterprise-frontier-safeguards" target="_blank" rel="noopener">Anthropic 公告</a>、<a href="https://www.cnbc.com/2026/09/01/anthropic-data-retention.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.helpnetsecurity.com/2026/09/02/anthropic-enterprise-frontier-safeguards/" target="_blank" rel="noopener">Help Net Security</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-05</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.10 公布</span>
+  </div>
+  <h3 class="headline">台積電 8 月營收 5,148.1 億台幣創單月歷史新高、年增 53.3%，連四月成長；1-8 月累計 3 兆 3,868.7 億元、年增 39.3%</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>台積電 9 月 10 日公布 8 月合併營收約新台幣 5,148.1 億元，月增 10.1%、年增 53.3%，為連續第四個月成長並創單月歷史新高，以美元計約 163.5 億美元；今年 1 至 8 月累計營收 3 兆 3,868.7 億元、年增 39.3%，AI 相關需求仍是主要驅動。但台股在 AI 賣壓與升息預期下承壓：9 月 15 日加權指數早盤一度翻紅攻上 46,009.85，隨後賣壓湧現，終場收 45,511.49 點、下跌 351.03 點（-0.77%），成交值縮至約 6,047 億元，僅 442 家上漲、1,360 家下跌，外資連續第四日賣超、期貨空單逾 8.3 萬口。今日（9/16）台股尚在盤中，本頁不採用盤中數據。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>「基本面創高、股價回檔」的組合在台股是熟悉的劇本，但這次的背景不同：費半單日 5.9% 的跌幅來自對 AI 需求「節奏」的懷疑而非「規模」，台積電 53% 的年增率正是這個懷疑最有力的反證。對台灣供應鏈企業，短線該做的不是追隨指數情緒，而是確認客戶的拉貨節奏是否有任何實質變化——目前所有公開數據都指向沒有。中期而言，外資連四賣加上升息預期，代表新台幣與資金面的壓力會延續到 FOMC 之後，出口商的匯率避險比例可以維持偏高。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://pr.tsmc.com/english/news/3340" target="_blank" rel="noopener">台積電新聞稿</a>、<a href="https://finance.yahoo.com/markets/stocks/articles/tsmc-august-revenue-rises-53-102300997.html" target="_blank" rel="noopener">Yahoo Finance</a>、<a href="https://newtalk.tw/news/view/2026-09-15/1059932" target="_blank" rel="noopener">Newtalk 新聞</a>、<a href="https://tw.stock.yahoo.com/quote/%5ETWII" target="_blank" rel="noopener">Yahoo 股市</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-06</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.14 報導・09.30 財報</span>
+  </div>
+  <h3 class="headline">記憶體超級循環：DRAM／NAND 8 月價格再創紀錄，美光 9/30 財報市場共識非 GAAP EPS 31.28 美元、年增約 932%</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>記憶體價格在 8 月再度刷新歷史紀錄，DRAM 與 NAND 同步走高，供給吃緊帶動全產業營收與毛利率同步擴張。美光將於 9 月 30 日公布財報，華爾街共識為非 GAAP 每股盈餘 31.28 美元，較 2025 會計年度第四季成長約 932%；市場普遍預期這份財報會再度確認「記憶體短缺尚未結束」，尤其是 DRAM。需求的核心驅動力是與 GPU 及 AI 加速器共同封裝的高頻寬記憶體（HBM），用以降低延遲、提升效能。供給端的展望更為緊繃：SK 海力士已表示 DRAM 的供需失衡在 2027 年只會更嚴重，並預期市場最快要到 2030 年才可能重回平衡。德意志銀行近期將美光目標價由 155 美元上調至 175 美元。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>記憶體是目前 AI 供應鏈中，少數「價格訊號與情緒訊號完全相反」的環節——費半因減速論重挫 5.9% 的同一週，DRAM 現貨仍在創高。對任何採購伺服器、終端裝置或工控產品的企業，這代表 2027 年的 BOM 成本會被記憶體單向推高，而且供應商極可能改以短天期報價或要求預付。務實的做法是：把第四季到明年上半年的記憶體需求量提前鎖定，接受比現價高的合約價以換取供應保證；同時重新檢視產品規格，能以軟體或壓縮技術省下的容量，現在的投資報酬率遠高於一年前。9/30 的美光財報與展望，是驗證這個假設的下一個硬數據。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.fool.com/investing/2026/09/14/prediction-micron-sept-30-earnings-memory-shortage/" target="_blank" rel="noopener">The Motley Fool</a>、<a href="https://finance.yahoo.com/markets/stocks/articles/prediction-microns-sept-30-earnings-083500410.html" target="_blank" rel="noopener">Yahoo Finance</a>、<a href="https://www.spglobal.com/market-intelligence/en/news-insights/research/2026/06/micron-a-look-at-memory-ahead-of-earning" target="_blank" rel="noopener">S&amp;P Global</a>、<a href="https://www.tipranks.com/news/the-fly/micron-price-target-raised-to-175-from-155-at-deutsche-bank-thefly" target="_blank" rel="noopener">TipRanks</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-07</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.04-14</span>
+  </div>
+  <h3 class="headline">產能與設備：台積電 CoWoS 2028 年前由月產 13 萬片倍增至 26 萬片、2nm 產能目標增 22%；ASML 2026 年營收預估上修至 430-450 億歐元</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>SEMICON Taiwan 2026 上，台積電副共同營運長侯永清揭露該公司的設備需求在九個月內幾乎翻倍，達到 2025 年 12 月基準的 1.9 倍。TrendForce 9 月 14 日報導，台積電目標在 2027 年中前將 2nm 產能提升約 22%、3nm 提升 16% 以上，先進封裝 CoWoS 產能則規劃自 2026 年底的每月約 13 萬片，於 2028 年底前倍增至每月 26 萬片。2026 年的 CoWoS 產線已全數賣光，全年需求估計接近 100 萬片（2024 年約 37 萬片），其中輝達一家就約占 60%、近 59.5 萬片。設備端同步受惠：ASML 2026 全年營收預估已由原先的 340-390 億歐元上修至 430-450 億歐元（約 500-520 億美元）。另一個現實的瓶頸是人力——晶圓廠建廠工人短缺已成為擴產的限制因素。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>這組數字是對「AI 減速論」最直接的反駁：設備訂單與封裝產能是兩到三年期的資本承諾，如果終端需求真的在放緩，這些數字不會在同一週被上修。對台灣供應鏈企業，重點不在於誰對誰錯，而在於產能分配的排序已經固化——輝達占走 CoWoS 六成，其餘客戶的交期與議價空間都被壓縮。若貴公司的產品需經先進封裝，2027 年的產能協議應在本季內談定，並準備好接受更長的鎖量條款；若是設備、廠務或無塵室工程供應商，人力而非訂單才是接下來兩年的成長天花板，現在該投入的是招募與訓練，不是產線。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.trendforce.com/news/2026/09/14/news-tsmc-reportedly-targets-22-2nm-16-3nm-capacity-boost-by-mid-2027-cowos-to-double-by-2028" target="_blank" rel="noopener">TrendForce</a>、<a href="https://www.techtimes.com/articles/326625/20260904/tsmc-equipment-demand-doubled-fab-construction-workers-are-running-out.htm" target="_blank" rel="noopener">Tech Times</a>、<a href="https://www.digitimes.com/news/a20251210PD218/tsmc-cowos-capacity-nvidia-equipment.html" target="_blank" rel="noopener">DIGITIMES</a>、<a href="https://siliconanalysts.com/analysis/foundry-allocation-status-q1-2026" target="_blank" rel="noopener">Silicon Analysts</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-08</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09 月內</span>
+  </div>
+  <h3 class="headline">AI 基建支出再加碼：Meta 9 月簽下 142 億美元 CoreWeave 合約、傳與甲骨文洽談 200 億美元；四大雲端 2026 年資本支出約 7,250 億美元、年增 77%</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>Meta 於 9 月簽下價值 142 億美元的 CoreWeave 算力合約，並傳出正與甲骨文洽談一紙約 200 億美元的合約。Meta 對 2026 年資本支出的指引為 1,150 億至 1,350 億美元，較 2025 年的 720 億美元接近翻倍，其中包含俄亥俄州一座 1GW 資料中心，以及路易斯安那州一座最終可擴充至 5GW 的園區。微軟公布的 2026 曆年資本支出計畫約 1,900 億美元，高出分析師共識的 1,546 億美元約 350 億美元。合計來看，四大超大規模雲端業者 2026 年將投入約 7,250 億美元於 AI 基礎設施，較 2025 年的約 4,100 億美元成長 77%，市場預估 2027 年將逼近 1 兆美元。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>把這串數字和同一天的「AI 減速論」放在一起看，會得到一個對企業更有用的結論：放慢的訴求發生在模型能力層，資本支出卻仍在基礎設施層全速前進，兩者並不矛盾——前者是治理議題，後者是折舊與租約。對供應鏈企業，意義是未來 18 個月的需求能見度仍高，但客戶集中度風險同步上升（Meta 一家的 capex 已接近台灣全年 GDP 的六分之一量級的支出規模）。對採購 AI 服務的企業，意義則相反：這麼大的資本支出終究要透過定價回收，現在簽的多年期算力或 API 合約，應加入價格調整上限與轉換條款，避免在折舊壓力轉嫁時完全被動。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.datacenterdynamics.com/en/news/meta-plans-notably-larger-capex-spend-on-ai-data-centers-in-2026-compute-expectations-already-higher-than-last-quarter-prediction/" target="_blank" rel="noopener">Data Center Dynamics</a>、<a href="https://www.globaldatacenterhub.com/p/microsoft-q3-fy2026-the-190b-capex" target="_blank" rel="noopener">Global Data Center Hub</a>、<a href="https://valueaddvc.com/blog/big-tech-ai-capex-in-2025-microsoft-google-meta-amazon-and-the-spending-race" target="_blank" rel="noopener">ValueAdd VC</a>、<a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/" target="_blank" rel="noopener">Futurum Group</a></div>
+</article>
+<article class="card watch">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-09</span>
+    <span class="badge watch">WATCH</span>
+    <span class="card-time mono">2026.09.15 發布</span>
+  </div>
+  <h3 class="headline">Google 9/15 推出 Gemini 3.8 Live 與 Live Extended Thinking，語音模型登上 Artificial Analysis 榜首；9/4 起分階段終止 Google Assistant</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>Google 於 9 月 15 日推出兩款語音 AI 模型 Gemini 3.8 Live 與 Gemini 3.8 Live Extended Thinking，後者在 Artificial Analysis 的 Speech to Speech Quality Index 上取得總排名第一。這是繼 9 月 2 日發布 Gemini 3.8 Flash 與 Gemini 3.8 Flash Cyber 之後，兩週內的第二波更新。與此同時，Google 自 9 月 4 日起在 Android 與 Wear OS 上分階段終止 Google Assistant，由 Gemini 接手助理職能，影響範圍涵蓋手機、平板、Wear OS 手錶、耳機與 Android Auto 車機。產品定位也在改變：Google 正把 Gemini 由聊天工具轉為「受監督的數位工作者」，可處理檔案、螢幕、文件、程式碼與部分 Google 服務；Gemini 亦已支援 Android 版 Google Sheets，可分析資料、產生洞察與圖表。搭載 Gemini 的 Googlebook 筆電則自 9 月 21 日起在美國開放預訂，定價 999 美元起。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>語音介面從「能用」跨到「最佳」這條線，對客服、門市與車載三個場景的影響是立即的：原本以人力為主的一線互動，成本結構會在 6-12 個月內被重新定義。但真正該現在動手的是另一件事——Google Assistant 的退場代表企業過去在助理生態上做的整合（語音指令、快捷、車機連動）將在未來一年失效，凡是有 Android 裝置整合的產品線，應立即盤點相依性並排定移轉時程，不要等到功能停止服務才發現。至於 Gemini 轉向「數位工作者」，採購方要留意的是權限邊界：一個能讀檔案、看螢幕、動服務的代理人，所需的稽核紀錄與最小權限設計，遠超過聊天機器人時代的規格。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://tech-insider.org/gemini-3-8-live-extended-thinking-launch-2026/" target="_blank" rel="noopener">Tech Insider</a>、<a href="https://the-decoder.com/google-will-shut-down-google-assistant-starting-september-2026-as-gemini-takes-over-on-android-and-wear-os/" target="_blank" rel="noopener">The Decoder</a>、<a href="https://ai.google.dev/gemini-api/docs/changelog" target="_blank" rel="noopener">Google AI for Developers</a>、<a href="https://tech-insider.org/googlebook-pre-order-september-21-price-2026/" target="_blank" rel="noopener">Tech Insider／Googlebook</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-10</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09.09 發表・09.18 開賣</span>
+  </div>
+  <h3 class="headline">Apple 首款摺疊機 iPhone Duo 亮相、iPhone 18 Pro 定價 1,199 美元；新任執行長 Ternus 首場主題演講，自研 C2 數據機同步登場</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>Apple 於 9 月 9 日在 Apple Park 的 Steve Jobs Theater 舉行「Surprise and Shine」發表會，這是 John Ternus 9 月 1 日接任執行長後的首場主題演講。發表產品包括 iPhone 18 Pro 與 18 Pro Max（Pro 起價 1,199 美元）、首款書本式摺疊 iPhone「iPhone Duo」（外螢幕約 5.5 吋、展開約 7.8 吋 OLED），以及 Apple Watch Series 12、Apple Watch Ultra 4 與 AirPods 5。Apple 同時公布第二代自研數據機 C2，將搭載於 iPhone Duo。預購已於 9 月 12 日（六）開始，旗艦機型預定 9 月 18 日（五）開賣，摺疊機的上市時程可能不同。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>Apple 在利率 5%、消費者價格敏感度上升的時點推出 1,199 美元起的 Pro 與價格更高的摺疊機，本質上是對高端消費韌性的一次壓力測試，9 月 18 日開賣後的首週銷售與換機週期將是觀察美國高端消費最即時的指標。對供應鏈，摺疊機的良率與初期出貨量比 Pro 系列更值得追蹤——它決定的是 2027 年新產品線的產能配置。對零售與電信業者，Ternus 時代的首款產品組合顯示 Apple 仍以硬體差異化（摺疊、自研數據機）而非 AI 功能為主軸，短期內 AI 手機的替換動能不宜高估。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/09/09/apple-event-today-live-updates.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://9to5mac.com/2026/08/26/apple-officially-announces-iphone-18-pro-foldable-event/" target="_blank" rel="noopener">9to5Mac</a>、<a href="https://www.macrumors.com/guide/apple-september-2026-what-to-expect/" target="_blank" rel="noopener">MacRumors</a>、<a href="https://www.forbes.com/sites/davidphelan/2026/09/06/apple-iphone-18-pro-release-date-schedule-your-complete-september-countdown/" target="_blank" rel="noopener">Forbes</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-11</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09.15</span>
+  </div>
+  <h3 class="headline">軟銀東京股價反彈 7.5%、日經收平 63,484.10；Altman 表示 OpenAI 上市「可能等到明年」，記憶體族群等待美光 9/30 財報</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>9 月 15 日日經 225 指數早盤大漲後回吐，終場小跌不到 0.1% 收 63,484.10；OpenAI 主要投資人軟銀集團反彈 7.5%（收 6,279 日圓），收復前一日 AI 賣壓的跌幅。軟銀反彈的觸媒是 OpenAI 執行長 Altman 在《Fortune》週六刊出的訪談中表示，公司「可能等到明年」才會上市；OpenAI 財務長 Sarah Friar 先前亦在內部會議表示將於「2027 年成為上市公司」，公司已於 6 月確認向 SEC 保密遞交 S-1，目標估值至少 1 兆美元、8 月年化營收已逾 400 億美元，但內部預估 2026 年虧損達 140 億美元、2030 年前後才能獲利。記憶體方面，美光將於 9 月 30 日公布財年第四季財報，市場預估營收約 508 億美元、年增約 350%，業界預期本季 DRAM 合約價季增 50%、NAND 季增 60%。韓國 KOSPI 因三星與 SK 海力士承壓、勉強守住 6,600。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>軟銀單日 7.5% 的反彈幅度顯示，市場對 AI 資產的定價已進入「消息驅動、缺乏共識」的階段——同一批投資人週一因減速論拋售、週二因 IPO 延後而回補，這在邏輯上是矛盾的，反映的是部位管理而非基本面判斷。對企業而言，這種環境下的策略決策不應被市場情緒牽動：美光 9 月 30 日的財報與其對 DRAM 價格的展望，才是檢驗 AI 硬體需求是否真有「節奏放慢」的下一個硬數據。若貴公司有記憶體採購需求，合約價季增 50-60% 的預期意味著第四季成本鎖定應該提前，而不是等待可能不會來的回落。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://ca.finance.yahoo.com/news/asian-shares-trade-mixed-markets-042859536.html" target="_blank" rel="noopener">AP／Yahoo Finance</a>、<a href="https://www.brecorder.com/news/40439551/japans-nikkei-rises-as-softbank-rebounds-from-ai-led-selloff" target="_blank" rel="noopener">Business Recorder／Reuters</a>、<a href="https://www.tradingkey.com/analysis/stocks/more/262168018-japan-south-korea-stocks-kospi-nikkei225-softbank-skhynix-samsung-kioxia-jpy-tradingkey" target="_blank" rel="noopener">TradingKey</a>、<a href="https://forgeglobal.com/insights/openai-upcoming-ipo-news/" target="_blank" rel="noopener">Forge Global</a>、<a href="https://www.fool.com/investing/2026/09/14/prediction-micron-sept-30-earnings-memory-shortage/" target="_blank" rel="noopener">The Motley Fool</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-12</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09 月內</span>
+  </div>
+  <h3 class="headline">OpenAI 一級估值 8,520 億美元、9 月二級市場隱含估值卻僅約 4,750 億；IPO 時程由原訂 2026 年 9 月遞延至 2027 年</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>OpenAI 於 2026 年 2 月 27 日完成 Series F，募得 1,220 億美元承諾資本，投後估值 8,520 億美元，兩年內成長 766%，微軟與輝達皆參與；2026 年預估年化營收（ARR）約 200 億美元，ChatGPT 於 6 月已達每週逾 9 億活躍使用者。但一級與二級市場出現明顯背離：到 2026 年 9 月，二級交易的綜合報價隱含估值已降至約 4,750 億美元，遠低於一級輪的 8,520 億。時程上，OpenAI 於 8 月以 8,520 億美元的價格執行約 70 億美元的員工股票回購，同時據報導其 SEC 註冊的 IPO 時間表已自原訂的 2026 年 9 月目標遞延至 2027 年——這與 Altman 近日「上市可能等到明年」的說法一致。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>一級與二級估值差距接近一倍，是這則新聞唯一重要的訊息：它不代表 OpenAI 的業務轉壞，而代表「願意以私募價格承接的邊際買方正在變少」。對企業客戶，這件事的實務含意是供應商的財務結構風險應該進入評估表——不是擔心倒閉，而是要預期定價策略在上市前後可能改變（提高企業版單價、調整免費層級、收緊速率限制）。建議在續約時把價格保護條款、資料可攜性與模型版本凍結期寫進合約；對已深度整合 OpenAI API 的產品，第二供應商的技術相容性驗證應在今年內完成，而不是等到漲價通知寄到。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.cnbc.com/2026/03/31/openai-funding-round-ipo.html" target="_blank" rel="noopener">CNBC</a>、<a href="https://www.forbes.com/sites/investor-hub/article/openai-ipo-things-to-know/" target="_blank" rel="noopener">Forbes</a>、<a href="https://openai.com/index/accelerating-the-next-phase-ai/" target="_blank" rel="noopener">OpenAI</a>、<a href="https://news.crunchbase.com/venture/openai-raise-largest-ai-venture-deal-ever/" target="_blank" rel="noopener">Crunchbase News</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-13</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.08.31-09.15</span>
+  </div>
+  <h3 class="headline">SK 海力士傳評估英特爾晶圓代工承接 HBM4E 基底晶片、隨後公開否認；同時核准 380 億美元興建兩座新記憶體廠</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>8 月底起多家媒體報導，SK 海力士正評估將 HBM 基底晶片（base die）的代工來源由台積電獨家改為台積電與英特爾雙軌，英特爾晶圓代工可能取得 HBM4E 基底晶片的相當比重訂單；報導指出台積電的 HBM4 基底晶片成本已達 SK 海力士自家 1b 製程核心晶片的 3 至 4 倍，且 HBM4E 世代差距可能再擴大，引入英特爾有助於成本彈性與供應穩定。技術面確有進展：SK 海力士在 Hot Chips 2026 上證實已針對英特爾的 EMIB-T 封裝完成設計驗證，以矽穿孔（TSV）處理堆疊晶片間的垂直供電。不過 SK 海力士其後公開否認正考慮由英特爾代工 HBM4E 基底晶片，英特爾股價則在報導當日上漲。另一方面，SK 海力士已核准約 380 億美元投資興建兩座新記憶體廠；三星則採自家 4nm 製程在內部生產 HBM4 基底晶片，並表示 HBM4 出貨增加與美洲客戶的基底晶片需求帶動了晶圓代工營收改善。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>否認歸否認，值得記住的是「已完成 EMIB-T 設計驗證」這件事本身——在先進封裝這種一旦綁定就難以更換的環節，第二來源的技術驗證比商業宣布早一到兩年發生。對台灣封裝、測試與材料供應商，這是一個明確的中期訊號：客戶正在系統性地降低對單一代工夥伴的依賴，未來的訂單競爭會從「價格」轉向「是否能同時支援兩種封裝平台」。建議現在就評估產線對 EMIB-T 與 CoWoS 兩套規格的相容性，並在與客戶的技術路線圖會議中主動提出雙平台支援——等到客戶正式詢價時再開始準備，時間已經不夠。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.trendforce.com/news/2026/08/31/news-sk-hynix-reportedly-weighs-intel-for-hbm4e-base-dies-amid-tsmc-cost-pressure-and-supply-diversification/" target="_blank" rel="noopener">TrendForce</a>、<a href="https://www.techpowerup.com/352169/sk-hynix-eyes-intel-foundry-for-hbm4e-base-die-manufacturing" target="_blank" rel="noopener">TechPowerUp</a>、<a href="https://www.marketscreener.com/news/sk-hynix-denies-report-of-intel-foundry-partnership-for-hbm4e-ce7858dcde8ff621" target="_blank" rel="noopener">MarketScreener</a>、<a href="https://cleanroomtechnology.com/sk-hynix-approves-38bn-investment-in-two-new" target="_blank" rel="noopener">Cleanroom Technology</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-14</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09.01-03</span>
+  </div>
+  <h3 class="headline">Robotaxi 競賽：特斯拉 Cybercab 9/3 在奧斯汀投入付費營運、無人里程破百萬；NHTSA 同日展開自我認證稽核，Waymo 已達 14 城／每週 50 萬趟</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>特斯拉於 9 月 3 日的 Cybercab 發表活動上宣布，Robotaxi 車隊的無監督行駛里程已突破 100 萬英里，並將專用車款 Cybercab 投入奧斯汀營運。目前特斯拉在德州（奧斯汀、達拉斯、休士頓）與佛州（邁阿密、奧蘭多、坦帕）已取消車內安全監督員，舊金山灣區則仍配置監督員。但同一天，美國國家公路交通安全管理局（NHTSA）針對特斯拉「Cybercab 符合聯邦汽車安全標準」的自我認證展開稽核，時點正是該車在奧斯汀投入付費載客之後。競爭對手 Waymo 則在 9 月 1 日（特斯拉發表前夕）搶先宣布三個新市場，截至 2026 年 9 月已在全美 14 個都會區營運、約 4,000 輛車、每週約 50 萬趟付費載客。Waymo 公開主張完全自駕不可能只靠單一感測方案、「純端到端」AI 系統的安全性不足，直指特斯拉的技術路線。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>Robotaxi 已經從「技術是否可行」過渡到「監理是否追得上」的階段，而 NHTSA 的稽核正是這個轉折的標記。對台灣車用電子、感測與零組件供應商，值得注意的是路線之爭尚未定案——Waymo 的多感測器方案與特斯拉的純視覺方案若持續並存，光達、毫米波雷達與高階影像感測的需求就不會被單一路線淘汰，短期內維持雙軌布局的風險反而低於押單邊。對車隊、物流與保險業者，則建議開始建立「無人車事故責任」的內部評估框架：當監督員從車上消失，責任分配會從駕駛行為轉向軟體版本與感測器狀態，這需要的是資料保全能力，而不是保單條款。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://www.cnn.com/2026/09/03/business/tesla-robotaxi-cybercab-self-driving-cars" target="_blank" rel="noopener">CNN Business</a>、<a href="https://techcrunch.com/2026/09/01/waymo-goes-on-offense-ahead-of-teslas-cybercab-launch/" target="_blank" rel="noopener">TechCrunch</a>、<a href="https://thechargeport.com/robotaxi-tracker" target="_blank" rel="noopener">The Chargeport／Robotaxi Tracker</a>、<a href="https://www.teslarati.com/tesla-crosses-major-unsupervised-self-driving-milestone/" target="_blank" rel="noopener">Teslarati</a></div>
+</article>
+<article class="card mon">
+  <div class="card-top">
+    <span class="sig-id mono">TEC-15</span>
+    <span class="badge mon">MONITOR</span>
+    <span class="card-time mono">2026.09.15 揭露</span>
+  </div>
+  <h3 class="headline">資安：思科證實三組攻擊者利用 Secure Firewall Management Center 漏洞投放 Qilin 勒索軟體；2026 年全球勒索受害者達 7,551 家、年增 24.9%</h3>
+  <div class="field">
+    <div class="field-label">Why It Matters</div>
+    <p>思科揭露，三組與勒索軟體及國家級攻擊有關的威脅集群，正在利用兩個近期才修補的 Secure Firewall Management Center（FMC）漏洞投放 Qilin 勒索軟體。微軟同時公布兩起活動：攻擊者濫用第三方電子郵件發送基礎設施大量發送金融詐騙訊息，以及以 passkey 為主題的社交工程手法入侵雲端環境。整體數據並不樂觀：Black Kite 的 2026 年勒索軟體報告統計受害組織達 7,551 家、年增 24.9%。2026 年迄今規模最大的已知外洩事件發生在保險業者 DentaQuest，遭竊的是健康資料；新興勒索集團 Crimson Collective 宣稱竊取電信業者 Brightspeed 逾百萬名客戶資料；另有勒索集團宣稱入侵美國菸酒槍砲及爆裂物管理局（ATF）內含調查對象資料的系統。TechCrunch 於 9 月 15 日整理了 2026 年至今最嚴重的入侵與外洩事件。</p>
+  </div>
+  <div class="field ceo">
+    <div class="field-label">CEO Insight</div>
+    <p>攻擊面正在往「資安設備本身」移動——防火牆管理主控台被當成入口，是這則消息最該被記住的部分：企業投資的防護產品若未即時更新，會從防線變成最短路徑。三件事建議本週內完成：一、確認所有網路與資安管理平台（防火牆、VPN、EDR 主控台）的修補版本與對外暴露面，管理介面不應直接曝露在公網；二、把 passkey 與 MFA 的社交工程情境納入年度演練，目前的攻擊已經繞過「有 MFA 就安全」的假設；三、檢視第三方電子郵件發送服務的 SPF／DKIM／DMARC 設定與供應商清單，這條路徑同時是詐騙與品牌信譽的風險。勒索受害數年增近 25%，代表這不是機率問題而是時程問題。</p>
+  </div>
+  <div class="card-source">來源：<a href="https://techcrunch.com/2026/09/15/the-worst-hacks-and-breaches-of-2026-so-far/" target="_blank" rel="noopener">TechCrunch</a>、<a href="https://blackkite.com/reports/2026-ransomware-report" target="_blank" rel="noopener">Black Kite</a>、<a href="https://www.brightdefense.com/resources/recent-data-breaches/" target="_blank" rel="noopener">Bright Defense</a>、<a href="https://www.cm-alliance.com/cybersecurity-blog/major-cyber-attacks-data-breaches-ransomware-attacks-in-july-2026" target="_blank" rel="noopener">Cyber Management Alliance</a></div>
+</article>
+      </div>
+  </main>
+  <aside class="side">
+      <div class="panel">
+        <h3>今日信號分布</h3>
+        <div class="donut-wrap">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <g transform="rotate(-90 60 60)">
+              <circle cx="60" cy="60" r="42" fill="none" stroke="var(--line)" stroke-width="16"/>
+              <circle cx="60" cy="60" r="42" fill="none" stroke="var(--red)" stroke-width="16"
+                stroke-dasharray="52.78 211.12" stroke-dashoffset="-0.00"/>
+              <circle cx="60" cy="60" r="42" fill="none" stroke="var(--amber)" stroke-width="16"
+                stroke-dasharray="105.56 158.34" stroke-dashoffset="-52.78"/>
+              <circle cx="60" cy="60" r="42" fill="none" stroke="var(--blue)" stroke-width="16"
+                stroke-dasharray="105.56 158.34" stroke-dashoffset="-158.34"/>
+            </g>
+            <text x="60" y="56" text-anchor="middle" style="font-family:var(--font-mono);fill:var(--text)" font-size="20" font-weight="700">15</text>
+            <text x="60" y="72" text-anchor="middle" style="font-family:var(--font-mono);fill:var(--text-dimmer)" font-size="11">SIGNALS</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-row"><span class="legend-dot" style="background:var(--red)"></span>CRITICAL<span class="legend-count">3 · 20%</span></div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--amber)"></span>WATCH<span class="legend-count">6 · 40%</span></div>
+            <div class="legend-row"><span class="legend-dot" style="background:var(--blue)"></span>MONITOR<span class="legend-count">6 · 40%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>產業熱力</h3>
+        <div class="heat-item">
+          <div class="heat-top"><span>AI 減速論與晶片需求節奏</span><span class="heat-pct">92</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:92%;background:var(--red)"></div></div>
+        </div>
+        <div class="heat-item">
+          <div class="heat-top"><span>記憶體超級循環（DRAM／HBM）</span><span class="heat-pct">90</span></div>
           <div class="heat-bar"><div class="heat-fill" style="width:90%;background:var(--red)"></div></div>
+        </div>
+        <div class="heat-item">
+          <div class="heat-top"><span>先進封裝與設備擴產</span><span class="heat-pct">84</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:84%;background:var(--red)"></div></div>
         </div>
         <div class="heat-item">
           <div class="heat-top"><span>AI 治理：白宮 vs. 實驗室</span><span class="heat-pct">76</span></div>
@@ -653,46 +1009,56 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
           <div class="heat-bar"><div class="heat-fill" style="width:68%;background:var(--amber)"></div></div>
         </div>
         <div class="heat-item">
-          <div class="heat-top"><span>中國內需疲弱與出口外溢</span><span class="heat-pct">52</span></div>
-          <div class="heat-bar"><div class="heat-fill" style="width:52%;background:var(--blue)"></div></div>
+          <div class="heat-top"><span>AI 資本支出集中度風險</span><span class="heat-pct">62</span></div>
+          <div class="heat-bar"><div class="heat-fill" style="width:62%;background:var(--amber)"></div></div>
         </div>
       </div>
-
       <div class="panel">
         <h3>行動清單</h3>
         <ul class="action-list">
-          <li>今晚 FOMC 準備「升一碼之後」的兩套劇本：點陣圖暗示年內再升 vs. 只升一次並強調資料依賴；明早亞洲開盤前完成融資成本與匯率避險部位確認</li>
-          <li>以 5% 無風險利率重跑所有仍用 4% 上下折現率的專案評估與併購模型；年底前有再融資需求者，停止等待「利率回落」</li>
-          <li>年度預算的能源與物流成本假設直接以 Brent 100-110 美元重做；經紅海／波灣航線的採購與出貨立即確認保險條款與替代航線報價</li>
-          <li>把能源附加費機制從物流合約擴大到能源敏感產品線，並提前向 B2B 客戶溝通成本傳導時程，避免年底一次性調價</li>
+          <li>對 AI 供應鏈客戶逐一確認拉貨節奏是否有實質變化（目前公開數據皆無）；記憶體採購在 DRAM／NAND 續創新高下應提前鎖定第四季至明年上半年成本</li>
           <li>AI 供應商合約新增三項檢查：保留期限與用途是否分開寫明、是否有客戶自持儲存與自管金鑰選項、供應商政策變更時的退出權</li>
           <li>把「是否加入產業標準機構、是否接受第三方預發布審計」納入 AI 供應商評選；合規框架將來自產業自組機構與歐盟，而非華府</li>
-          <li>對 AI 供應鏈客戶逐一確認拉貨節奏是否有實質變化（目前公開數據皆無）；記憶體採購在 DRAM 季增 50% 預期下應提前鎖定第四季成本</li>
-          <li>追蹤 9/18 iPhone 18 Pro／Duo 開賣首週與 9/30 美光財報，分別作為高端消費韌性與 AI 硬體需求的下一個硬數據</li>
+          <li>需經先進封裝的產品，2027 年 CoWoS 產能協議應在本季內談定，並準備接受更長的鎖量條款；封測與材料廠評估 EMIB-T 與 CoWoS 雙平台相容性</li>
+          <li>多年期算力與 API 合約加入價格調整上限、資料可攜與模型版本凍結條款；已深度整合單一供應商者，今年內完成第二供應商相容性驗證</li>
+          <li>盤點 Android／Wear OS 上對 Google Assistant 的整合相依性並排定移轉時程，不要等到功能停止服務才發現</li>
+          <li>本週完成資安三檢查：防火牆與 EDR 管理介面不得曝露公網並確認修補版本、passkey 社交工程納入演練、第三方寄信服務的 SPF／DKIM／DMARC 與供應商清單</li>
+          <li>追蹤 9/18 iPhone 18 Pro／Duo 開賣首週與 9/30 美光財報，分別作為高端消費韌性與 AI 記憶體需求的下一個硬數據</li>
         </ul>
       </div>
-
       <div class="panel">
         <h3>今日定調</h3>
         <div class="tone-box">
-          <p>9 月 16 日（週三）是本季最關鍵的一天：聯準會將在台北時間 17 日凌晨 2 點公布決議，市場定價 86-92% 升息一碼、把聯邦資金利率推升至 3.75%-4.00%，這將是 2023 年 7 月以來首次升息，也是 Warsh 上任後首次改變利率。決議前的市場已先行表態——10 年期公債殖利率 9 月 15 日盤中觸及 5.04%，是 2007 年 7 月以來首度站上 5%；美股連兩日收黑，道瓊跌 328.09 點收 52,093.11、標普跌 0.45% 收 7,585.73、那斯達克跌 0.78% 收 25,981.57，歐股 STOXX 600 跌至三個月低點。推升殖利率的是兩股力量的疊加：一是能源，沙烏地 9 月 11 日因無人機攻擊關閉每日 500 萬桶的東西原油管線，與伊朗 9 月 9 日攻擊荷姆茲 10 艘船隻疊加，Brent 一度衝上 108-109 美元、15 日仍在 107 美元附近，波灣兩條出口動脈同時受限；二是數據，8 月 CPI 年增 3.4%、汽油月漲 3.9%，雖然核心 CPI 年增 2.4% 已是 2021 年 3 月以來最低，但 Fed 無法「看穿」油價。歐洲央行已先一步在 9 月 10 日一致決議升息至 2.50%、今日生效，Lagarde 稱之「毫無懸念」。與貨幣政策平行的第二條主線是 AI：Anthropic 執行長 Amodei 週末發表〈We Must Pace the Frontier〉呼籲全球放慢前沿開發，Altman、Hassabis、Musk 罕見連署，費城半導體指數週一應聲重挫 5.9%、輝達跌 3.36%、博通跌 4.77%；川普隨即在 All-In Summit 致電黃仁勳並被開擴音，稱 AI 風險「整件事是騙局」，並在 Truth Social 點名批評 Amodei、拒絕任何護欄——白宮與三大實驗室在治理路線上正式分道。企業採購端的資料主權爭議同步升溫：Palantir、輝達、Booz Allen 對 Anthropic 模型設限、要求零資料保留，Anthropic 則以與逾 100 家金融機構共同開發的 Enterprise Frontier Safeguards 回應。基本面數據卻與情緒相反：台積電 8 月營收 5,148.1 億台幣、年增 53.3% 創單月新高；甲骨文 FY27Q1 RPO 達 6,640 億美元、OCI 營收年增 121%，只是「一半綁在 OpenAI」的集中度與 Ellison 一日撤回 75 億美元出售計畫，讓市場開始追問積壓訂單的現金轉換。中國 8 月數據「生產強、內需弱」，零售僅增 0.4%、投資萎縮 7.2%，產能外溢壓力延續。結論：市場正在同時定價「5% 的資金成本」、「100 美元以上的油價」與「AI 需求節奏的不確定性」三重壓力，市場緊張指數升至 5/5；今晚 Warsh 的點陣圖與記者會措辭，將決定這是階段性高點還是新區間的起點。</p>
+          <p>科技面的今日主線是一場「情緒與數字背道而馳」的對撞。情緒端：Anthropic 執行長 Amodei 週末發表〈We Must Pace the Frontier〉呼籲全球放慢前沿 AI 開發，Altman、Hassabis、Musk 罕見連署，費城半導體指數 9/14 應聲重挫 5.9%、輝達跌 3.36%、博通跌 4.77%；川普隨即在 All-In Summit 現場致電黃仁勳並被開擴音，稱 AI 風險「整件事是騙局」，並在 Truth Social 點名批評 Amodei、拒絕任何護欄——白宮與三大實驗室的治理路線正式分道。採購端的資料主權爭議同步升溫：Palantir、輝達、Booz Allen 對 Anthropic 模型設限、要求零資料保留承諾，Anthropic 則以與逾 100 家金融機構共同開發的 Enterprise Frontier Safeguards 回應。但數字端完全相反：台積電 8 月營收 5,148.1 億台幣、年增 53.3% 創單月新高，1-8 月累計年增 39.3%；台積電設備需求九個月內升至 2025 年 12 月基準的 1.9 倍，2nm 產能目標 2027 年中前增 22%、CoWoS 規劃 2028 年底前由月產 13 萬片倍增至 26 萬片，ASML 2026 年營收預估上修至 430-450 億歐元；DRAM 與 NAND 8 月價格再創紀錄，美光 9/30 財報共識非 GAAP EPS 達 31.28 美元、年增約 932%，SK 海力士更直言 DRAM 供需失衡最快 2030 年才會平衡。資本支出亦無減速跡象：Meta 9 月簽下 142 億美元 CoreWeave 合約、傳與甲骨文洽談 200 億美元，四大雲端 2026 年合計投入約 7,250 億美元、年增 77%。甲骨文 FY27Q1 剩餘履約義務衝上 6,640 億美元、OCI 營收年增 121%，只是「一半綁在 OpenAI」的集中度與 Ellison 一日撤回 75 億美元出售計畫，讓市場開始追問積壓訂單的現金轉換；OpenAI 一級估值 8,520 億美元、9 月二級市場隱含估值卻僅約 4,750 億，IPO 遞延至 2027 年，正是同一個疑問的鏡像。產品線仍在推進：Google 9/15 發布 Gemini 3.8 Live 並登上語音品質榜首、9/4 起終止 Google Assistant；Apple iPhone Duo 與 18 Pro 9/18 開賣；特斯拉 Cybercab 9/3 在奧斯汀投入付費營運、NHTSA 同日展開稽核。結論：放慢的訴求發生在模型能力層，資本與產能卻仍在基礎設施層全速前進；企業該做的不是選邊，而是把「需求能見度高、供應商集中度也高」這件事同時寫進採購與風險管理。</p>
         </div>
       </div>
-    </div>
-  </div>
+  </aside>
+</div>
 
   <div class="footer">
     <div class="footer-sources">
-      <b>資料來源：</b>CNBC・Yahoo Finance・TheStreet・Bloomberg・Trading Economics・BLS・CBS News・Kiplinger・Quartz・Axios・Reuters／Business Recorder・CNN Business・OilPrice.com・Fortune・Al Jazeera・Charles Schwab・Benzinga・NBC News・Euronews・ECB・Investing.com・TechCrunch・The Information・Anthropic・Help Net Security・台積電新聞稿・Newtalk・Yahoo 股市・RTTNews・9to5Mac・MacRumors・Forbes・USAGOLD・XTB・AP・TradingKey・Forge Global・The Motley Fool・PR Newswire・Intellizence 等公開報導綜合整理，僅供資訊參考，不構成投資建議
+      <b>資料來源：</b>CNBC・Yahoo Finance・TheStreet・Bloomberg・Trading Economics・BLS・美國普查局・CBS News・Kiplinger・Quartz・Axios・Reuters／Business Recorder・CNN Business・OilPrice.com・Fortune・Al Jazeera・ABC News・Ukrainska Pravda・Kyiv Independent・Charles Schwab・Benzinga・NBC News・Euronews・ECB・英格蘭銀行・日本銀行・Finance Calendar・CentralBank.watch・Tech Times・HomeOwners Alliance・House of Commons Library・BritSavvy・J.P. Morgan Research・LSEG・Xeneta・Seatrade Maritime・Investing.com・TechCrunch・The Information・Anthropic・Help Net Security・台積電新聞稿・TrendForce・DIGITIMES・Silicon Analysts・S&amp;P Global・The Motley Fool・TipRanks・TechPowerUp・MarketScreener・Cleanroom Technology・Data Center Dynamics・Global Data Center Hub・Futurum Group・ValueAdd VC・The Decoder・Google AI for Developers・Tech Insider・Forbes・OpenAI・Crunchbase News・Teslarati・The Chargeport・Black Kite・Bright Defense・Cyber Management Alliance・Newtalk・Yahoo 股市・RTTNews・9to5Mac・MacRumors・USAGOLD・XTB・AP・TradingKey・Forge Global・PR Newswire・Intellizence 等公開報導綜合整理，僅供資訊參考，不構成投資建議
     </div>
     <div class="footer-brand">
       <img src="data:image/png;base64,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" alt="VINEA" />
-      <span class="footer-meta">產出時間 2026.09.16 CST<br>ASSETS: repo｜IMGS: 3/3｜SIGNALS: 15</span>
+      <span class="footer-meta">產出時間 2026.09.16 CST<br>ASSETS: repo｜IMGS: 3/3｜SIGNALS: 15+15=30</span>
     </div>
   </div>
 </div>
 
 <script>(function(){var t=document.getElementById('marqueeTrack'); if(t){ t.innerHTML += t.innerHTML; }})();</script>
+<script>(function(){
+  var btns=[].slice.call(document.querySelectorAll('.tab-btn'));
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('is-active'); x.setAttribute('aria-selected','false');});
+      b.classList.add('is-active'); b.setAttribute('aria-selected','true');
+      [].slice.call(document.querySelectorAll('.tab-panel')).forEach(function(p){p.hidden=true;});
+      var t=document.getElementById(b.getAttribute('aria-controls')); if(t){t.hidden=false;}
+      window.scrollTo(0,0);
+    });
+  });
+})();</script>
 
 </body>
 </html>
