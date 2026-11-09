@@ -271,6 +271,24 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
   .wrap{padding-left:max(10px, env(safe-area-inset-left)); padding-right:max(10px, env(safe-area-inset-right)); padding-bottom:calc(28px + env(safe-area-inset-bottom));}
   .topbar, .footer{padding-left:max(10px, env(safe-area-inset-left)); padding-right:max(10px, env(safe-area-inset-right));}
 }
+
+/* 底部 Tab 列（2026-11-09 新增）：滑到最底可直接換頁籤或回頂端，一次點擊完成。
+   刻意不用 position:fixed（不佔螢幕、不必處理 safe-area），也不掛 scroll 監聽。 */
+.tabs-bottom{
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+  margin:24px 0 0; padding-top:14px;
+  border-top:1px solid var(--line); border-bottom:0;
+}
+.tabs-bottom .to-top{
+  margin-left:auto; appearance:none; background:none; border:0;
+  padding:10px 14px; font-family:var(--font-mono); font-size:13px;
+  color:var(--text-dim); cursor:pointer;
+}
+.tabs-bottom .to-top:hover{ color:var(--accent-text); }
+@media (max-width:640px){
+  .tabs-bottom{ gap:4px; }
+  .tabs-bottom .to-top{ margin-left:auto; padding:10px 8px; }
+}
 </style>
 <div class="topbar">
   <div class="brand">
@@ -1024,6 +1042,12 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
   </aside>
 </div>
 
+  <div class="tabs tabs-bottom" role="tablist" aria-label="切換頁籤（底部）">
+    <button class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="panel-news" type="button">時事 <span class="tab-count">15</span></button>
+    <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-tech" type="button">科技 <span class="tab-count">15</span></button>
+    <button class="to-top" type="button">↑ 回頂端</button>
+  </div>
+
   <div class="footer">
     <div class="footer-sources">
       <b>資料來源：</b>CNBC・Bloomberg・CNN・Yahoo Finance・Fortune・BNN Bloomberg・TradingEconomics・Federal Reserve官方・CBS News・GuruFocus・Blackstone官方・Kirkland & Ellis・CSIS・Investing.com(Reuters)・Bitcoin Foundation・BLS官方・TechCrunch・The Hacker News・AI Agents Directory・Anthropic官方・The Motley Fool・247wallst.com・Accelirate・Digital Applied・Network World・Tech-Insider・TweakTown・TradingKey・Lexology・Global Competition Review・Skadden・Paul Hastings・Al Jazeera・GlobalSecurity.org・Finbold・Tech Times
@@ -1037,14 +1061,20 @@ body{ background:var(--bg); min-height:100vh; min-height:100dvh; }
 <script>(function(){var t=document.getElementById('marqueeTrack'); if(t){ t.innerHTML += t.innerHTML; }})();</script>
 <script>(function(){
   var btns=[].slice.call(document.querySelectorAll('.tab-btn'));
-  btns.forEach(function(b){
-    b.addEventListener('click',function(){
-      btns.forEach(function(x){x.classList.remove('is-active'); x.setAttribute('aria-selected','false');});
-      b.classList.add('is-active'); b.setAttribute('aria-selected','true');
-      [].slice.call(document.querySelectorAll('.tab-panel')).forEach(function(p){p.hidden=true;});
-      var t=document.getElementById(b.getAttribute('aria-controls')); if(t){t.hidden=false;}
-      window.scrollTo(0,0);
+  function show(id){
+    btns.forEach(function(b){
+      var on=(b.getAttribute('aria-controls')===id);
+      b.classList.toggle('is-active',on);
+      b.setAttribute('aria-selected',on?'true':'false');
     });
+    [].slice.call(document.querySelectorAll('.tab-panel')).forEach(function(p){p.hidden=(p.id!==id);});
+    window.scrollTo(0,0);
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){ show(b.getAttribute('aria-controls')); });
+  });
+  [].slice.call(document.querySelectorAll('.to-top')).forEach(function(t){
+    t.addEventListener('click',function(){ window.scrollTo(0,0); });
   });
 })();</script>
 </body>
